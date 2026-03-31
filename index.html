@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Android No-Code Tool</title>
+  <link rel="stylesheet" href="styles/style.css"/>
+</head>
+<body>
+
+<!-- ====================================================
+     ヘッダー
+     ==================================================== -->
+<header class="app-header">
+  <div class="logo">📱 Android No-Code Tool</div>
+  <div class="spacer"></div>
+  <button id="btn-undo"     class="header-btn" title="元に戻す (Ctrl+Z)">↩ Undo</button>
+  <button id="btn-redo"     class="header-btn" title="やり直す (Ctrl+Y)">↪ Redo</button>
+  <button id="btn-clear"    class="header-btn">🗑 クリア</button>
+  <button id="btn-generate" class="header-btn primary">⚡ Generate Code</button>
+</header>
+
+<!-- ====================================================
+     サンプルバー
+     ==================================================== -->
+<div class="samples-bar">
+  <span class="samples-label">サンプル:</span>
+  <button class="sample-btn" data-sample="オプションメニュー">☰ オプションメニュー</button>
+  <button class="sample-btn" data-sample="リストビュー">📋 リストビュー</button>
+  <button class="sample-btn" data-sample="リスト選択">✅ リスト選択</button>
+</div>
+
+<!-- ====================================================
+     メインボディ (3カラム)
+     ==================================================== -->
+<div class="app-body">
+
+  <!-- ---- 左: コンポーネントパレット ---- -->
+  <aside class="panel">
+    <div class="panel-header">コンポーネント</div>
+    <div class="panel-body">
+
+      <div class="palette-category">
+        <div class="palette-category-title">基本</div>
+        <div class="palette-item" data-type="Button">
+          <span class="item-icon">🔘</span>
+          <span class="item-label">Button</span>
+        </div>
+        <div class="palette-item" data-type="TextView">
+          <span class="item-icon">📝</span>
+          <span class="item-label">TextView</span>
+        </div>
+        <div class="palette-item" data-type="EditText">
+          <span class="item-icon">✏️</span>
+          <span class="item-label">EditText</span>
+        </div>
+        <div class="palette-item" data-type="ImageView">
+          <span class="item-icon">🖼️</span>
+          <span class="item-label">ImageView</span>
+        </div>
+      </div>
+
+      <div class="palette-category">
+        <div class="palette-category-title">レイアウト</div>
+        <div class="palette-item" data-type="LinearLayout">
+          <span class="item-icon">📐</span>
+          <span class="item-label">LinearLayout</span>
+        </div>
+      </div>
+
+      <div class="palette-category">
+        <div class="palette-category-title">リスト</div>
+        <div class="palette-item" data-type="ListView">
+          <span class="item-icon">📋</span>
+          <span class="item-label">ListView</span>
+        </div>
+        <div class="palette-item" data-type="RecyclerView">
+          <span class="item-icon">♻️</span>
+          <span class="item-label">RecyclerView</span>
+        </div>
+      </div>
+
+      <div class="palette-category">
+        <div class="palette-category-title">メニュー</div>
+        <div class="palette-item" data-type="OptionsMenu">
+          <span class="item-icon">☰</span>
+          <span class="item-label">OptionsMenu</span>
+        </div>
+      </div>
+
+      <div class="palette-category" style="margin-top:12px; padding-top:8px; border-top:1px solid #E0E0E0;">
+        <div class="palette-category-title" style="color:#9E9E9E; font-size:0.65rem;">
+          💡 ドラッグ or ダブルクリックで追加
+        </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <!-- ---- 中央: キャンバス ---- -->
+  <div class="canvas-wrapper">
+    <div class="canvas-toolbar">
+      <span class="toolbar-label">🎨 デザインキャンバス</span>
+    </div>
+    <div class="canvas-scroll">
+      <div id="canvas"></div>
+    </div>
+  </div>
+
+  <!-- ---- 右: プロパティパネル ---- -->
+  <aside class="panel prop-panel">
+    <div class="panel-header">プロパティ</div>
+    <div class="panel-body" id="prop-content">
+      <p class="prop-empty">コンポーネントを選択してください</p>
+    </div>
+  </aside>
+
+</div><!-- /.app-body -->
+
+<!-- ====================================================
+     コードパネル (ページ下部)
+     ==================================================== -->
+<div id="code-panel">
+
+  <div class="code-panel-header">
+    <span class="panel-title">⚡ 生成コード</span>
+    <div class="spacer"></div>
+    <button class="copy-btn" data-copy="code-xml">📋 XML コピー</button>
+    <button class="copy-btn" data-copy="code-kotlin">📋 Kotlin コピー</button>
+    <button class="copy-btn" data-copy="code-menu-xml">📋 Menu XML コピー</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="tab-xml">activity_main.xml</button>
+    <button class="tab-btn"        data-tab="tab-kotlin">MainActivity.kt</button>
+    <button class="tab-btn"        data-tab="tab-menu">menu XML</button>
+  </div>
+
+  <div id="tab-xml" class="tab-content active">
+    <pre id="code-xml" class="code-block"><!-- コンポーネントを追加するとXMLが表示されます --></pre>
+  </div>
+
+  <div id="tab-kotlin" class="tab-content">
+    <pre id="code-kotlin" class="code-block">// コンポーネントを追加するとKotlinコードが表示されます</pre>
+  </div>
+
+  <div id="tab-menu" class="tab-content">
+    <pre id="code-menu-xml" class="code-block"><!-- OptionsMenuを追加するとメニューXMLが表示されます --></pre>
+  </div>
+
+</div><!-- /#code-panel -->
+
+<!-- スクリプト読み込み (依存順) -->
+<script src="scripts/components.js"></script>
+<script src="scripts/codeGenerator.js"></script>
+<script src="scripts/samples.js"></script>
+<script src="scripts/editor.js"></script>
+</body>
+</html>

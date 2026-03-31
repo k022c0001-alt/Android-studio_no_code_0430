@@ -1,0 +1,538 @@
+/* =============================================================
+   style.css  –  Android No-Code Tool
+   ============================================================= */
+
+/* ── リセット & 変数 ─────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --primary:        #6200EE;
+  --primary-light:  #9C47FF;
+  --primary-dark:   #3700B3;
+  --secondary:      #03DAC5;
+  --bg:             #F5F5F5;
+  --surface:        #FFFFFF;
+  --border:         #E0E0E0;
+  --text-primary:   #212121;
+  --text-secondary: #757575;
+  --error:          #B00020;
+  --shadow:         0 2px 8px rgba(0,0,0,0.12);
+  --radius:         8px;
+  --transition:     0.18s ease;
+  --font:           'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── ヘッダー ─────────────────────────────────── */
+.app-header {
+  background: var(--primary);
+  color: #fff;
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.app-header .logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.app-header .spacer { flex: 1; }
+
+.header-btn {
+  background: rgba(255,255,255,0.18);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: var(--radius);
+  padding: 6px 14px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: background var(--transition);
+  white-space: nowrap;
+}
+
+.header-btn:hover { background: rgba(255,255,255,0.28); }
+
+.header-btn.primary {
+  background: var(--secondary);
+  color: var(--primary-dark);
+  border-color: transparent;
+}
+.header-btn.primary:hover { background: #00c4b0; }
+
+/* ── メインレイアウト ─────────────────────────── */
+.app-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 200px 1fr 280px;
+  grid-template-rows: 1fr;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ── パネル共通 ───────────────────────────────── */
+.panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.panel-header {
+  padding: 10px 14px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  background: #FAFAFA;
+  flex-shrink: 0;
+}
+
+.panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+/* ── パレット ─────────────────────────────────── */
+.palette-category {
+  margin-bottom: 8px;
+}
+
+.palette-category-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-secondary);
+  padding: 4px 6px 2px;
+}
+
+.palette-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  cursor: grab;
+  user-select: none;
+  transition: background var(--transition), transform var(--transition);
+  border: 1px solid transparent;
+  font-size: 0.875rem;
+}
+
+.palette-item:hover {
+  background: #EDE7F6;
+  border-color: var(--primary-light);
+}
+
+.palette-item:active { cursor: grabbing; }
+
+.palette-item.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+}
+
+.palette-item .item-icon { font-size: 1.1rem; }
+.palette-item .item-label { font-weight: 500; color: var(--text-primary); }
+
+/* ── キャンバス ───────────────────────────────── */
+.canvas-wrapper {
+  display: flex;
+  flex-direction: column;
+  background: #ECEFF1;
+  overflow: hidden;
+}
+
+.canvas-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.canvas-toolbar .toolbar-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-right: auto;
+}
+
+.tool-btn {
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: all var(--transition);
+}
+.tool-btn:hover { background: var(--bg); color: var(--text-primary); border-color: var(--primary); }
+.tool-btn:disabled { opacity: 0.4; cursor: default; }
+
+.canvas-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+#canvas {
+  min-height: 100%;
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  position: relative;
+  transition: all var(--transition);
+}
+
+#canvas.drop-empty { border: 2px dashed var(--primary); }
+
+/* キャンバス空状態 */
+.canvas-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  color: var(--text-secondary);
+  gap: 12px;
+}
+.canvas-empty-icon { font-size: 3rem; }
+.canvas-empty p { font-size: 0.875rem; text-align: center; }
+
+/* ── キャンバスコンポーネントカード ──────────── */
+.canvas-component {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  position: relative;
+}
+
+.canvas-component:hover { border-color: var(--primary-light); box-shadow: 0 0 0 2px rgba(98,0,238,0.1); }
+.canvas-component.selected { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(98,0,238,0.25); }
+.canvas-component.dragging { opacity: 0.45; }
+.canvas-component.drop-before { border-top: 3px solid var(--primary); padding-top: 5px; }
+.canvas-component.drop-after  { border-bottom: 3px solid var(--primary); padding-bottom: 5px; }
+
+.comp-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+  background: #FAFAFA;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.comp-icon  { font-size: 0.9rem; }
+.comp-label { font-weight: 700; font-size: 0.8rem; color: var(--primary); }
+.comp-id    { font-size: 0.75rem; color: var(--text-secondary); margin-left: auto; font-family: monospace; }
+
+.comp-delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: color var(--transition), background var(--transition);
+  line-height: 1;
+}
+.comp-delete:hover { color: var(--error); background: #FFEBEE; }
+
+.comp-preview {
+  padding: 12px;
+  font-size: 0.85rem;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+/* ── プレビュー要素スタイル ───────────────────── */
+.preview-button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: default;
+  pointer-events: none;
+}
+
+.preview-text  { font-size: 0.9rem; }
+.preview-input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 0.875rem;
+  background: var(--bg);
+  pointer-events: none;
+}
+
+.preview-image {
+  background: var(--bg);
+  border: 1px dashed var(--border);
+  border-radius: 4px;
+  padding: 12px;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.preview-list {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.preview-list-item {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+}
+.preview-list-item:last-child { border-bottom: none; }
+
+.preview-menu {
+  background: #263238;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.preview-layout {
+  width: 100%;
+  border: 2px dashed var(--border);
+  border-radius: 4px;
+  padding: 8px 12px;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+/* ── プロパティパネル ─────────────────────────── */
+.prop-panel {
+  border-right: none;
+  border-left: 1px solid var(--border);
+}
+
+.prop-empty {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  padding: 16px;
+  text-align: center;
+}
+
+.prop-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--primary);
+  padding: 8px 4px 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+
+.prop-row {
+  margin-bottom: 10px;
+}
+
+.prop-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.prop-input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  background: var(--surface);
+  color: var(--text-primary);
+  transition: border-color var(--transition);
+  outline: none;
+}
+.prop-input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(98,0,238,0.15); }
+
+.prop-color-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.prop-color {
+  width: 40px;
+  height: 32px;
+  padding: 2px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.prop-color-text { flex: 1; }
+
+/* ── コードパネル (ページ下部) ───────────────── */
+#code-panel {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  height: 320px;
+}
+
+.code-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #263238;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.code-panel-header .panel-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.code-panel-header .spacer { flex: 1; }
+
+.copy-btn {
+  padding: 4px 12px;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: var(--radius);
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: background var(--transition);
+}
+.copy-btn:hover { background: rgba(255,255,255,0.22); }
+
+/* タブ */
+.tabs {
+  display: flex;
+  background: #37474F;
+  flex-shrink: 0;
+}
+
+.tab-btn {
+  padding: 8px 20px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.6);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-bottom: 3px solid transparent;
+  transition: all var(--transition);
+}
+.tab-btn:hover { color: rgba(255,255,255,0.9); }
+.tab-btn.active { color: var(--secondary); border-bottom-color: var(--secondary); }
+
+.tab-content {
+  display: none;
+  flex: 1;
+  overflow: auto;
+  background: #1E272C;
+}
+.tab-content.active { display: block; }
+
+.code-block {
+  margin: 0;
+  padding: 16px;
+  font-family: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: #EEFFFF;
+  white-space: pre;
+  tab-size: 4;
+}
+
+/* ── サンプルセクション ───────────────────────── */
+.samples-bar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.samples-bar .samples-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.sample-btn {
+  padding: 5px 14px;
+  border: 1px solid var(--primary);
+  border-radius: 20px;
+  background: none;
+  color: var(--primary);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+.sample-btn:hover { background: var(--primary); color: #fff; }
+
+/* ── スクロールバー ───────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #BDBDBD; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #9E9E9E; }
+
+/* ── レスポンシブ ─────────────────────────────── */
+@media (max-width: 900px) {
+  .app-body {
+    grid-template-columns: 160px 1fr 240px;
+  }
+}
+
+@media (max-width: 680px) {
+  .app-body {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+  }
+  .panel { border-right: none; border-bottom: 1px solid var(--border); }
+  .prop-panel { border-left: none; border-top: 1px solid var(--border); }
+  #code-panel { height: 260px; }
+}
