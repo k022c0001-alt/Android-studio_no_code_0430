@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Component Palette (Extended)</title>
+<style>
+  body { font-family: Roboto, sans-serif; font-size: 13px; margin: 0; padding: 0; background: #fff; }
+  .palette-section { margin-bottom: 8px; }
+  .palette-section-heading {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: #5f6368;
+    padding: 8px 12px 4px;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .palette-section-heading::after {
+    content: ''; flex: 1; height: 1px; background: #e0e0e0;
+  }
+  .palette-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 12px; cursor: grab;
+    transition: background 0.15s; border: 1px solid transparent;
+    border-radius: 6px; margin: 1px 4px;
+  }
+  .palette-item:hover { background: #f1f3f4; border-color: #e0e0e0; }
+  .palette-item:active { cursor: grabbing; }
+  .icon { font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+  .info { flex: 1; min-width: 0; }
+  .name { font-size: 13px; font-weight: 500; }
+  .desc { font-size: 10px; color: #80868b; margin-top: 1px; }
+  .badge {
+    font-size: 9px; padding: 1px 5px; border-radius: 3px;
+    font-weight: 600; text-transform: uppercase; flex-shrink: 0;
+  }
+  .badge-basic { background: #E3F2FD; color: #1565C0; }
+  .badge-layout { background: #E8F5E9; color: #2E7D32; }
+  .badge-list { background: #FFF3E0; color: #E65100; }
+  .badge-material { background: #EDE7F6; color: #4527A0; }
+  .badge-nav { background: #FCE4EC; color: #880E4F; }
+  .search-bar {
+    padding: 8px 10px;
+    border-bottom: 1px solid #e0e0e0;
+    position: sticky; top: 0; background: white; z-index: 1;
+  }
+  .search-bar input {
+    width: 100%; padding: 6px 10px;
+    border: 1px solid #ddd; border-radius: 20px;
+    font-size: 13px; box-sizing: border-box;
+    background: #f8f9fa;
+  }
+  .search-bar input:focus { outline: none; border-color: #6200EE; background: white; }
+</style>
+</head>
+<body>
+
+<div class="search-bar">
+  <input type="text" placeholder="🔍 コンポーネントを検索..." oninput="filterComponents(this.value)">
+</div>
+
+<div id="palette-content">
+
+  <!-- ===== Basic Components ===== -->
+  <div class="palette-section" data-category="basic">
+    <div class="palette-section-heading">⬛ 基本コンポーネント</div>
+
+    <div class="palette-item" draggable="true" data-type="Button" data-tags="button click action">
+      <span class="icon">🔘</span>
+      <div class="info"><div class="name">Button</div><div class="desc">クリック可能なボタン</div></div>
+      <span class="badge badge-basic">基本</span>
+    </div>
+
+    <div class="palette-item" draggable="true" data-type="MaterialButton" data-tags="button material md3">
+      <span class="icon">🔷</span>
+      <div class="info"><div class="name">MaterialButton</div><div class="desc">Material Design 3 ボタン</div></div>
+      <span class="badge badge-material">MD3</span>
+    </div>
+
+    <div class="palette-item" draggable="true" data-type="TextView" data-tags="text label display">
+      <span class="icon">📝</span>
+      <div class="info"><div class="name">TextView</div><div class="desc">テキスト表示</div></div>
+      <span class="badge badge-basic">基本</span>
+    </div>
+
+    <div class="palette-item" draggable="true" data-type="EditText" data-tags="input text field form">
+      <span class="icon">✏️</span>
+      <div class="info"><div class="name">EditText</div><div class="desc">テキスト入力フィールド</div></div>
+      <span class="badge badge-basic">基本</span>
+    </div>
+
+    <div class="palette-item" draggable="true" data-type="ImageView" data-tags="image photo picture drawable">
+      <span class="icon">🖼️</span>
+      <div class="info"><div class="name">ImageView</div><div class="desc">画像表示</div></div>
+      <span class="badge badge-basic">基本</span>
+    </div>
+
+    <div class="palette-item" draggable="true" data-type="CheckBox" data-tags="checkbox check boolean">
+      <span class="icon">☑️</span>
+      <div class="info"><div class="name">CheckBox</div><div class="desc">チェックボックス</div></div>
+      <span class="badge badge-basic">基本</span>
+    </div>
+
+    <div class="palette-item" draggable="true" data-type="RadioButton" data-tags="radio button select single">
+      <span class="icon">🔘</span>
+      <div class="info"><div class="name">RadioButton</div><div class="desc">ラジオボタン</div></div>
+      <span class="badge badge-basic">基本</span>
+    </div>
+
+    <div class="palette-item" draggable="true" data-type="Switch" data-tags="switch toggle boolean">
+      <span class="icon">🔄</span>
+      <div class="info"><div class="name">Switch</div><div class="desc">スイッチ（ON/OFF）</div></div>
+      <span class="badge badge-basic">基本</span>
+    </div>
+
+    <div class="palette-item" draggable="true" data-type="ToggleButton" data-tags="toggle button on off">
+      <span class="icon">🔁</span>
+      <div class="info"><div class="name">ToggleButton</div><div class="desc">トグルボタン</div></div>
+      <span class="badge badge-basic">基本</span>
+    </div>
+
+    <div class="palette-item" draggable="true" data-type="Spinner" data-tags="spinner dropdown select">
+      <span class="icon">🔽</span>
+      <div class="info"><div class="name">Spinner</div><div class="desc">ドロップダウン選択</div></div>
+      <span class="badge badge-basic">基本</span>
+    </div>
+
+    <div class="palette-item" draggable="true" data-type="ImageButton" data-tags="image button icon">
+      <span class="icon">🖼</span>
+      <div class="info"><div class="name">ImageButton</div><div class="desc">画像ボタン</div></div>
+      <span class="badge badge-basic">基本</span>
+    </div>
+  </div>
+
+  <!-- ===== Layout Components ===== -->
+  <div class="palette-section" data-category="layout">
+    <div class="palette-section-heading">📐 レイアウト</div>
+
+    <div class="palette-item" draggable="true" data-type="LinearLayout" data-tags="layout linear vertical horizontal container">
+      <span class="icon">⬛</span>
+      <div class="info"><div class="name">LinearLayout</div><div class="desc">縦/横方向の線形レイアウト</div></div>
+      <span class="badge badge-layout">レイアウト</span>
+    </div>
+
+    <div class="palette-item" draggable="true" data-type="FrameLayout" data-tags="layout frame overlay container">
+      <span class="icon">🪟</span>
+      <div class="info"><div class="name">FrameLayout</div><div class="desc">重ね合わせレイアウト</div></div>
+      <span class="badge badge-layout">レイアウト</span>
+    </div>
+
+    <div class="palette-item" draggable="true" data-type="GridLayout" data-tags="layout grid columns container">
+      <span class="icon">▦</span>
+      <div class="info"><div class="name">GridLayout</div><div class="desc">グリッドレイアウト</div></div>
+      <span class="badge badge-layout">レイアウト</span>
+    </div>
+
+    <div class="palette-item" draggable="true" data-type="RelativeLayout" data-tags="layout relative position container">
+      <span class="icon">⊞</span>
+      <div class="info"><div class="name">RelativeLayout</div><div class="desc">相対位置レイアウト</div></div>
+      <span class="badge badge-layout">レイアウト</span>
+    </div>
+
+    <div class="palette-item" draggable="true" data-type="ConstraintLayout" data-tags="layout constraint responsive container">
+      <span class="icon">🔗</span>
+      <div class="info"><div class="name">ConstraintLayout</div><div class="desc">制約ベースレイアウト（推奨）</div></div>
+      <span class="badge badge-layout">レイアウト</span>
+    </div>
+
+    <div class="palette-item" draggable="true" data-type="ScrollView" data-tags="scroll container layout">
+      <span class="icon">📜</span>
+      <div class="info"><div class="name">ScrollView</div><div class="desc">スクロールコンテナ</div></div>
+      <span class="badge badge-layout">レイアウト</span>
+    </div>
+  </div>
+
+  <!-- ===== List / Scroll Components ===== -->
+  <div class="palette-section" data-category="list">
+    <div class="palette-section-heading">📋 リスト/スクロール</div>
+
+    <div class="palette-item" draggable="true" data-type="RecyclerView" data-tags="list recycler scroll adapter modern">
+      <span class="icon">♻️</span>
+      <div class="info"><div class="name">RecyclerView</div><div class="desc">モダンなリスト表示（推奨）</div></div>
+      <span class="badge badge-list">リスト</span>
+    </div>
+
+    <div class="palette-item" draggable="true" data-type="ListView" data-tags="list scroll items">
+      <span class="icon">📋</span>
+      <div class="info"><div class="name">ListView</div><div class="desc">シンプルなリスト表示</div></div>
+      <span class="badge badge-list">リスト</span>
+    </div>
+
+    <div class="palette-item" draggable="true" data-type="ViewPager" data-tags="pager swipe pages viewpager">
+      <span class="icon">📖</span>
+      <div class="info"><div class="name">ViewPager2</div><div class="desc">スワイプページング</div></div>
+      <span class="badge badge-list">リスト</span>
+    </div>
+  </div>
+
+  <!-- ===== Material Design Components ===== -->
+  <div class="palette-section" data-category="material">
+    <div class="palette-section-heading">💎 Material Design</div>
+
+    <div class="palette-item" draggable="true" data-type="MaterialCardView" data-tags="card material container elevation">
+      <span class="icon">🃏</span>
+      <div class="info"><div class="name">MaterialCardView</div><div class="desc">マテリアルカード</div></div>
+      <span class="badge badge-material">MD3</span>
+    </div>
+
+    <div class="palette-item" draggable="true" data-type="Chip" data-tags="chip tag filter material">
+      <span class="icon">🏷️</span>
+      <div class="info"><div class="name">Chip</div><div class="desc">チップ（タグ/フィルター）</div></div>
+      <span class="badge badge-material">MD3</span>
+    </div>
+
+    <div class="palette-item" draggable="true" data-type="FloatingActionButton" data-tags="fab floating action button material">
+      <span class="icon">➕</span>
+      <div class="info"><div class="name">FAB</div><div class="desc">フローティングアクションボタン</div></div>
+      <span class="badge badge-material">MD3</span>
+    </div>
+
+    <div class="palette-item" draggable="true" data-type="ProgressBar" data-tags="progress loading indicator bar">
+      <span class="icon">⏳</span>
+      <div class="info"><div class="name">ProgressBar</div><div class="desc">プログレスバー/インジケータ</div></div>
+      <span class="badge badge-material">MD3</span>
+    </div>
+
+    <div class="palette-item" draggable="true" data-type="Slider" data-tags="slider range seek material">
+      <span class="icon">🎚️</span>
+      <div class="info"><div class="name">Slider</div><div class="desc">スライダー</div></div>
+      <span class="badge badge-material">MD3</span>
+    </div>
+  </div>
+
+  <!-- ===== Navigation Components ===== -->
+  <div class="palette-section" data-category="navigation">
+    <div class="palette-section-heading">🧭 ナビゲーション</div>
+
+    <div class="palette-item" draggable="true" data-type="TabLayout" data-tags="tab navigation layout tabs">
+      <span class="icon">📑</span>
+      <div class="info"><div class="name">TabLayout</div><div class="desc">タブナビゲーション</div></div>
+      <span class="badge badge-nav">ナビ</span>
+    </div>
+
+    <div class="palette-item" draggable="true" data-type="NavigationView" data-tags="navigation drawer menu nav">
+      <span class="icon">🧭</span>
+      <div class="info"><div class="name">NavigationView</div><div class="desc">ナビゲーションドロワー</div></div>
+      <span class="badge badge-nav">ナビ</span>
+    </div>
+
+    <div class="palette-item" draggable="true" data-type="Menu" data-tags="menu navigation options">
+      <span class="icon">☰</span>
+      <div class="info"><div class="name">OptionsMenu</div><div class="desc">オプションメニュー</div></div>
+      <span class="badge badge-nav">ナビ</span>
+    </div>
+  </div>
+
+</div><!-- /palette-content -->
+
+<script>
+function filterComponents(query) {
+  const q = query.toLowerCase().trim();
+  const items = document.querySelectorAll('.palette-item');
+  const sections = document.querySelectorAll('.palette-section');
+
+  items.forEach(item => {
+    const name = (item.querySelector('.name').textContent || '').toLowerCase();
+    const desc = (item.querySelector('.desc').textContent || '').toLowerCase();
+    const tags = (item.dataset.tags || '').toLowerCase();
+    const match = !q || name.includes(q) || desc.includes(q) || tags.includes(q);
+    item.style.display = match ? '' : 'none';
+  });
+
+  sections.forEach(section => {
+    const visibleItems = section.querySelectorAll('.palette-item:not([style*="display: none"])');
+    section.style.display = visibleItems.length > 0 ? '' : 'none';
+  });
+}
+
+// Set up drag events
+document.querySelectorAll('.palette-item').forEach(item => {
+  item.addEventListener('dragstart', e => {
+    e.dataTransfer.setData('text/plain', item.dataset.type);
+    e.dataTransfer.effectAllowed = 'copy';
+    item.style.opacity = '0.5';
+  });
+  item.addEventListener('dragend', () => {
+    item.style.opacity = '';
+  });
+});
+</script>
+</body>
+</html>

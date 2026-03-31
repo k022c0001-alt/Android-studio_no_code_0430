@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Material Design Properties</title>
+<style>
+  body { font-family: Roboto, sans-serif; font-size: 13px; margin: 0; padding: 8px; }
+  .prop-group { margin-bottom: 10px; }
+  label { display: block; font-size: 11px; font-weight: 600; color: #5f6368; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  input, select { width: 100%; padding: 6px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; box-sizing: border-box; }
+  input:focus, select:focus { outline: none; border-color: #6200EE; }
+  h3 { font-size: 14px; margin: 0 0 10px; color: #202124; }
+  .material-preview { border-radius: 8px; padding: 16px; background: white; border: 1px solid #ddd; margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .md-btn-filled { background: #6750A4; color: white; border: none; border-radius: 20px; padding: 10px 24px; font-size: 14px; cursor: pointer; }
+  .md-btn-outlined { background: transparent; color: #6750A4; border: 1px solid #79747E; border-radius: 20px; padding: 10px 24px; font-size: 14px; cursor: pointer; }
+  .md-chip { background: #E8DEF8; color: #21005D; border-radius: 8px; padding: 6px 16px; font-size: 14px; display: inline-block; }
+  .md-card { background: #FFFBFE; border-radius: 12px; padding: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); width: 100%; }
+  .dep-badge { background: #E8EAF6; color: #3F51B5; border-radius: 4px; padding: 4px 8px; font-size: 11px; margin-top: 4px; display: inline-block; }
+  .style-btn { border: 1px solid #ddd; background: white; border-radius: 16px; padding: 4px 12px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+  .style-btn.active { background: #6750A4; color: white; border-color: #6750A4; }
+  .style-row { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+<h3>💎 Material Design コンポーネント</h3>
+
+<div class="material-preview">
+  <button class="md-btn-filled">Filled</button>
+  <button class="md-btn-outlined">Outlined</button>
+  <span class="md-chip">Chip</span>
+</div>
+
+<div class="style-row">
+  <button class="style-btn active">MaterialButton</button>
+  <button class="style-btn">MaterialCardView</button>
+  <button class="style-btn">Chip</button>
+  <button class="style-btn">FAB</button>
+</div>
+
+<!-- MaterialButton -->
+<div id="sectionButton">
+  <div class="prop-group">
+    <label>Button Style</label>
+    <select>
+      <option>filled</option>
+      <option>outlined</option>
+      <option>text</option>
+      <option>elevated</option>
+      <option>tonal</option>
+    </select>
+  </div>
+  <div class="prop-group">
+    <label>Text</label>
+    <input type="text" value="Button">
+  </div>
+  <div class="prop-group">
+    <label>Background Tint</label>
+    <input type="color" value="#6750A4">
+  </div>
+  <div class="prop-group">
+    <label>Corner Radius</label>
+    <input type="text" value="20dp">
+  </div>
+  <div class="prop-group">
+    <label>Icon (optional)</label>
+    <input type="text" placeholder="@drawable/ic_icon">
+  </div>
+  <div class="dep-badge">📦 com.google.android.material:material:1.9.0</div>
+</div>
+
+<div class="md-card" style="margin-top:12px;">
+  <div style="font-size:13px;font-weight:500;margin-bottom:4px;">MaterialCardView</div>
+  <div style="font-size:11px;color:#666;">Elevation, corner radius, stroke を設定してカード表示を実現</div>
+</div>
+</body>
+</html>
