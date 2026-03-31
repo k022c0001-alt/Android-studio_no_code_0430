@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Android No-Code Editor</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/phase2-extensions.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&family=Fira+Code&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ============================================================
+     TOP BAR
+     ============================================================ -->
+<div id="topbar">
+    <span class="app-title">📱 NoCode</span>
+    <input id="project-name" type="text" placeholder="プロジェクト名" value="Untitled Project">
+    <div class="separator"></div>
+
+    <!-- Undo/Redo -->
+    <button id="btn-undo" class="topbar-btn" title="元に戻す (Ctrl+Z)" disabled>↩ Undo</button>
+    <button id="btn-redo" class="topbar-btn" title="やり直す (Ctrl+Y)" disabled>↪ Redo</button>
+    <div class="separator"></div>
+
+    <!-- Save/Load -->
+    <button id="btn-save" class="topbar-btn" title="プロジェクトを保存">💾 Save</button>
+    <button id="btn-load" class="topbar-btn" title="プロジェクトを読込">📂 Load</button>
+    <div class="separator"></div>
+
+    <!-- Clear -->
+    <button id="btn-clear" class="topbar-btn danger" title="すべてクリア">🗑 Clear</button>
+
+    <!-- Spacer -->
+    <div class="flex-spacer"></div>
+
+    <!-- History indicator -->
+    <span id="history-indicator"></span>
+
+    <!-- Auto save indicator -->
+    <span id="autosave-indicator">自動保存: --</span>
+    <div class="separator"></div>
+
+    <!-- Zoom controls -->
+    <div id="zoom-controls">
+        <button id="btn-zoom-out" class="topbar-btn" title="ズームアウト">－</button>
+        <span id="zoom-level">100%</span>
+        <button id="btn-zoom-in" class="topbar-btn" title="ズームイン">＋</button>
+        <button id="btn-zoom-reset" class="topbar-btn" title="ズームリセット">⊙</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     MAIN LAYOUT
+     ============================================================ -->
+<div id="main-layout">
+
+    <!-- LEFT SIDEBAR -->
+    <div id="left-sidebar">
+        <div class="sidebar-tabs">
+            <div class="sidebar-tab active" data-tab="components">コンポーネント</div>
+            <div class="sidebar-tab" data-tab="templates">テンプレート</div>
+        </div>
+
+        <!-- Components Tab -->
+        <div id="tab-components" class="sidebar-tab-content active">
+            <div id="component-palette"></div>
+
+            <!-- サンプル -->
+            <div id="samples-section">
+                <div class="palette-section-title" style="padding: 0 4px 4px;">サンプル</div>
+                <div class="sample-item" data-sample="sample_menu">📋 オプションメニュー</div>
+                <div class="sample-item" data-sample="sample_listview">📝 リストビュー</div>
+                <div class="sample-item" data-sample="sample_select">☑️ リスト選択</div>
+            </div>
+        </div>
+
+        <!-- Templates Tab -->
+        <div id="tab-templates" class="sidebar-tab-content">
+            <div id="templates-panel">
+                <button id="btn-save-template">➕ 現在の設計をテンプレートに保存</button>
+                <button id="btn-import-template">📥 テンプレートをインポート</button>
+                <div id="templates-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CANVAS AREA -->
+    <div id="canvas-area">
+
+        <!-- Grid Controls -->
+        <div id="grid-controls-panel">
+            <label>
+                <input type="checkbox" id="chk-grid" checked> グリッド表示
+            </label>
+            <label>
+                <input type="checkbox" id="chk-snap" checked> スナップ
+            </label>
+            <div class="grid-size-control">
+                グリッドサイズ:
+                <select id="sel-grid-size">
+                    <option value="10">10px</option>
+                    <option value="20" selected>20px</option>
+                    <option value="40">40px</option>
+                    <option value="50">50px</option>
+                </select>
+            </div>
+            <span class="flex-spacer"></span>
+            <span id="canvas-size-label">360 × 640 px</span>
+        </div>
+
+        <!-- Canvas Container (handles zoom/pan) -->
+        <div id="canvas-container">
+            <div id="canvas">
+                <!-- Components are added here dynamically -->
+            </div>
+            <div id="canvas-zoom-badge">100%</div>
+        </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div id="right-panel">
+        <div class="panel-tabs">
+            <div class="panel-tab active" data-panel="properties">プロパティ</div>
+            <div class="panel-tab" data-panel="code">コード</div>
+        </div>
+
+        <!-- Properties Panel -->
+        <div id="panel-properties" class="panel-content active">
+            <div id="properties-panel">
+                <div id="properties-empty">
+                    <p>コンポーネントを選択してください</p>
+                </div>
+                <span id="selected-component-type" style="display:none;"></span>
+                <div id="property-fields"></div>
+            </div>
+            <button id="btn-delete-component" disabled>🗑 コンポーネントを削除</button>
+        </div>
+
+        <!-- Code Panel -->
+        <div id="panel-code" class="panel-content">
+            <div id="code-mode-selector">
+                <button class="code-mode-btn active" data-mode="xml">XML</button>
+                <button class="code-mode-btn" data-mode="kotlin">Kotlin</button>
+                <button class="code-mode-btn" data-mode="strings">strings</button>
+            </div>
+            <pre id="code-output"></pre>
+            <button id="btn-copy-code">📋 コピー</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- STATUS BAR -->
+<div id="statusbar">
+    <div class="status-item">📦 コンポーネント: <strong id="status-comp-count">0</strong></div>
+    <div class="status-item">📍 選択中: <strong id="status-selected">なし</strong></div>
+    <div class="status-item" id="status-grid-info">🔲 グリッド: 20px</div>
+    <div class="flex-spacer"></div>
+    <div class="status-item">⌨️ Ctrl+Z: Undo / Ctrl+Y: Redo / Space+Drag: Pan</div>
+</div>
+
+<!-- ============================================================
+     SCRIPTS (in dependency order)
+     ============================================================ -->
+<script src="scripts/components.js"></script>
+<script src="scripts/history.js"></script>
+<script src="scripts/storage.js"></script>
+<script src="scripts/canvas.js"></script>
+<script src="scripts/grid.js"></script>
+<script src="scripts/templates.js"></script>
+<script src="scripts/codeGenerator.js"></script>
+<script src="scripts/samples.js"></script>
+<script src="scripts/editor.js"></script>
+
+<script>
+// ============================================================
+// アプリケーション初期化
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- Canvas & Grid 初期化 ---
+    const canvasContainer = document.getElementById('canvas-container');
+    const canvasEl = document.getElementById('canvas');
+    initCanvas(canvasContainer, canvasEl);
+    initGrid(canvasEl);
+
+    // --- Editor 初期化 ---
+    storageManager.setEditor(editor);
+    templateManager.setEditor(editor);
+
+    setupDropZone();
+    setupComponentPalette();
+    setupPropertiesPanel();
+
+    // --- History ショートカット ---
+    initHistoryShortcuts();
+
+    // --- History ボタン接続 ---
+    historyManager.onChange(updateHistoryButtons);
+    historyManager.onChange((state) => {
+        const indicator = document.getElementById('history-indicator');
+        if (indicator) {
+            indicator.textContent = state.undoCount > 0
+                ? `${state.undoCount} ops`
+                : '';
+        }
+    });
+
+    document.getElementById('btn-undo').addEventListener('click', () => {
+        const result = historyManager.undo();
+        if (result) showToast(`Undo: ${result}`);
+    });
+
+    document.getElementById('btn-redo').addEventListener('click', () => {
+        const result = historyManager.redo();
+        if (result) showToast(`Redo: ${result}`);
+    });
+
+    // --- Save / Load ---
+    document.getElementById('btn-save').addEventListener('click', () => {
+        storageManager.saveToLocalStorage();
+        storageManager.downloadProject();
+        showToast('💾 プロジェクトを保存しました');
+    });
+
+    document.getElementById('btn-load').addEventListener('click', () => {
+        storageManager.uploadProject((ok, data) => {
+            if (ok) {
+                showToast(`📂 読込完了: ${data.name}`);
+            } else {
+                showToast('❌ 読込に失敗しました');
+            }
+        });
+    });
+
+    // --- Clear ---
+    document.getElementById('btn-clear').addEventListener('click', () => {
+        if (editor.components.length === 0) return;
+        if (confirm('すべてのコンポーネントを削除しますか？')) {
+            editor.clearAll();
+            showToast('🗑 クリアしました');
+        }
+    });
+
+    // --- Zoom ---
+    document.getElementById('btn-zoom-in').addEventListener('click', () => {
+        canvasManager.zoomIn();
+    });
+    document.getElementById('btn-zoom-out').addEventListener('click', () => {
+        canvasManager.zoomOut();
+    });
+    document.getElementById('btn-zoom-reset').addEventListener('click', () => {
+        canvasManager.reset();
+        showToast('⊙ ズームリセット');
+    });
+
+    canvasManager.onChange((state) => {
+        const badge = document.getElementById('canvas-zoom-badge');
+        if (badge) badge.textContent = `${Math.round(state.scale * 100)}%`;
+    });
+
+    // --- Grid Controls ---
+    document.getElementById('chk-grid').addEventListener('change', (e) => {
+        gridManager.setGridVisible(e.target.checked);
+        updateGridStatus();
+    });
+    document.getElementById('chk-snap').addEventListener('change', (e) => {
+        gridManager.setSnapEnabled(e.target.checked);
+        updateGridStatus();
+    });
+    document.getElementById('sel-grid-size').addEventListener('change', (e) => {
+        gridManager.setGridSize(parseInt(e.target.value));
+        updateGridStatus();
+    });
+
+    function updateGridStatus() {
+        const el = document.getElementById('status-grid-info');
+        if (el) el.textContent = `🔲 グリッド: ${gridManager.gridSize}px ${gridManager.snapEnabled ? '(スナップON)' : '(スナップOFF)'}`;
+    }
+    updateGridStatus();
+
+    // --- Project Name ---
+    document.getElementById('project-name').addEventListener('change', (e) => {
+        editor.projectName = e.target.value;
+    });
+
+    // --- Delete Component ---
+    document.getElementById('btn-delete-component').addEventListener('click', () => {
+        if (editor.selectedId) {
+            editor.removeComponent(editor.selectedId);
+            showToast('🗑 コンポーネントを削除しました');
+        }
+    });
+
+    // --- Code Mode ---
+    document.querySelectorAll('.code-mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.code-mode-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            codeGenerator.setMode(btn.dataset.mode);
+            // コード出力を更新
+            const outputEl = document.getElementById('code-output');
+            if (outputEl) outputEl.textContent = codeGenerator.generate(editor.components);
+        });
+    });
+
+    // --- Copy Code ---
+    document.getElementById('btn-copy-code').addEventListener('click', () => {
+        const code = document.getElementById('code-output').textContent;
+        navigator.clipboard.writeText(code).then(() => {
+            showToast('📋 コピーしました');
+        }).catch(() => {
+            showToast('❌ コピーに失敗しました');
+        });
+    });
+
+    // --- Panel Tabs ---
+    document.querySelectorAll('.panel-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            const panelId = tab.dataset.panel;
+            document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.panel-content').forEach(p => p.classList.remove('active'));
+            tab.classList.add('active');
+            const panel = document.getElementById(`panel-${panelId}`);
+            if (panel) panel.classList.add('active');
+        });
+    });
+
+    // --- Sidebar Tabs ---
+    document.querySelectorAll('.sidebar-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabId = tab.dataset.tab;
+            document.querySelectorAll('.sidebar-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.sidebar-tab-content').forEach(c => c.classList.remove('active'));
+            tab.classList.add('active');
+            const content = document.getElementById(`tab-${tabId}`);
+            if (content) content.classList.add('active');
+        });
+    });
+
+    // --- Sample Buttons ---
+    document.querySelectorAll('.sample-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const sampleId = item.dataset.sample;
+            if (editor.components.length > 0) {
+                if (!confirm('現在の設計をクリアしてサンプルを読み込みますか？')) return;
+            }
+            loadSample(sampleId, editor);
+            showToast('📋 サンプルを読み込みました');
+        });
+    });
+
+    // --- Templates ---
+    function renderTemplates() {
+        const container = document.getElementById('templates-list');
+        if (!container) return;
+        container.innerHTML = '';
+
+        const templates = templateManager.getAllTemplates();
+        const builtins = templates.filter(t => t.builtin);
+        const user = templates.filter(t => !t.builtin);
+
+        if (builtins.length > 0) {
+            const title = document.createElement('div');
+            title.className = 'templates-section-title';
+            title.textContent = 'ビルトイン';
+            container.appendChild(title);
+            builtins.forEach(t => container.appendChild(createTemplateItem(t)));
+        }
+
+        if (user.length > 0) {
+            const title = document.createElement('div');
+            title.className = 'templates-section-title';
+            title.textContent = 'マイテンプレート';
+            container.appendChild(title);
+            user.forEach(t => container.appendChild(createTemplateItem(t)));
+        }
+
+        if (templates.length === 0) {
+            container.innerHTML = '<p style="text-align:center;color:#999;font-size:12px;padding:20px;">テンプレートがありません</p>';
+        }
+    }
+
+    function createTemplateItem(template) {
+        const item = document.createElement('div');
+        item.className = 'template-item';
+
+        const icon = document.createElement('span');
+        icon.className = 'template-item-icon';
+        icon.textContent = template.icon || '📐';
+        item.appendChild(icon);
+
+        const info = document.createElement('div');
+        info.className = 'template-item-info';
+        info.innerHTML = `
+            <div class="template-item-name">${template.name}</div>
+            <div class="template-item-desc">${template.description || ''}</div>
+        `;
+        item.appendChild(info);
+
+        const actions = document.createElement('div');
+        actions.className = 'template-item-actions';
+
+        // Apply on main click
+        info.addEventListener('click', () => applyTemplate(template));
+        icon.addEventListener('click', () => applyTemplate(template));
+
+        // Export button
+        const exportBtn = document.createElement('button');
+        exportBtn.className = 'template-action-btn';
+        exportBtn.title = 'エクスポート';
+        exportBtn.textContent = '⬇';
+        exportBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            templateManager.exportTemplate(template.id);
+        });
+        actions.appendChild(exportBtn);
+
+        // Delete button (user templates only)
+        if (!template.builtin) {
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'template-action-btn delete';
+            deleteBtn.title = '削除';
+            deleteBtn.textContent = '✕';
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (confirm(`テンプレート "${template.name}" を削除しますか？`)) {
+                    templateManager.deleteTemplate(template.id);
+                    showToast('テンプレートを削除しました');
+                }
+            });
+            actions.appendChild(deleteBtn);
+        }
+
+        item.appendChild(actions);
+        return item;
+    }
+
+    function applyTemplate(template) {
+        if (editor.components.length > 0) {
+            if (!confirm(`テンプレート "${template.name}" を適用します。現在の設計は置換されます。`)) return;
+        }
+        templateManager.applyTemplate(template.id);
+        showToast(`📐 テンプレート "${template.name}" を適用しました`);
+    }
+
+    templateManager.onChange(renderTemplates);
+    renderTemplates();
+
+    // Save current as template
+    document.getElementById('btn-save-template').addEventListener('click', () => {
+        if (editor.components.length === 0) {
+            showToast('❌ コンポーネントがありません');
+            return;
+        }
+        showSaveTemplateDialog();
+    });
+
+    document.getElementById('btn-import-template').addEventListener('click', () => {
+        templateManager.importTemplate((ok, data) => {
+            if (ok) showToast(`📥 テンプレート "${data.name}" をインポートしました`);
+            else showToast('❌ インポートに失敗しました');
+        });
+    });
+
+    function showSaveTemplateDialog() {
+        const overlay = document.createElement('div');
+        overlay.className = 'dialog-overlay';
+        overlay.innerHTML = `
+            <div class="dialog-box">
+                <h3>テンプレートとして保存</h3>
+                <div class="dialog-field">
+                    <label>テンプレート名</label>
+                    <input type="text" id="dlg-template-name" placeholder="マイテンプレート" value="">
+                </div>
+                <div class="dialog-field">
+                    <label>説明</label>
+                    <input type="text" id="dlg-template-desc" placeholder="説明（任意）" value="">
+                </div>
+                <div class="dialog-actions">
+                    <button class="dialog-btn secondary" id="dlg-cancel">キャンセル</button>
+                    <button class="dialog-btn primary" id="dlg-save">保存</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        document.getElementById('dlg-template-name').focus();
+
+        document.getElementById('dlg-cancel').addEventListener('click', () => {
+            overlay.remove();
+        });
+
+        document.getElementById('dlg-save').addEventListener('click', () => {
+            const name = document.getElementById('dlg-template-name').value.trim() || 'マイテンプレート';
+            const desc = document.getElementById('dlg-template-desc').value.trim();
+            const t = templateManager.saveCurrentAsTemplate(name, desc);
+            overlay.remove();
+            if (t) {
+                showToast(`📐 テンプレート "${t.name}" を保存しました`);
+                // テンプレートタブに切り替え
+                document.querySelectorAll('.sidebar-tab').forEach(tab => {
+                    if (tab.dataset.tab === 'templates') tab.click();
+                });
+            }
+        });
+
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) overlay.remove();
+        });
+    }
+
+    // --- Status bar updates ---
+    editor.onChange((components) => {
+        const countEl = document.getElementById('status-comp-count');
+        if (countEl) countEl.textContent = components.length;
+    });
+
+    editor.onSelect((comp) => {
+        const el = document.getElementById('status-selected');
+        if (el) el.textContent = comp ? `${comp.type} (${comp.props.id || comp.id})` : 'なし';
+
+        const typeLabel = document.getElementById('selected-component-type');
+        if (typeLabel) {
+            typeLabel.textContent = comp ? comp.type : '';
+            typeLabel.style.display = comp ? 'block' : 'none';
+        }
+    });
+
+    // --- Auto-save 初期化 ---
+    startAutoSave(30000);
+
+    // --- 前回のプロジェクト自動復元 ---
+    const meta = storageManager.getLastSaveMeta();
+    if (meta) {
+        const shouldRestore = confirm(`前回のプロジェクト "${meta.name}" を復元しますか？\n（保存日時: ${new Date(meta.savedAt).toLocaleString()}）`);
+        if (shouldRestore) {
+            const saved = storageManager.loadFromLocalStorage();
+            if (saved) {
+                editor.loadProject(saved);
+                showToast(`📂 "${saved.name}" を復元しました`);
+            }
+        }
+    }
+
+    // --- 初期コード出力 ---
+    const outputEl = document.getElementById('code-output');
+    if (outputEl) outputEl.textContent = codeGenerator.generate(editor.components);
+
+    showToast('✅ エディタの準備ができました');
+});
+</script>
+
+</body>
+</html>
