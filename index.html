@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="styles/style.css">
   <link rel="stylesheet" href="styles/phase3-components.css">
   <link rel="stylesheet" href="styles/material-design.css">
+  <link rel="stylesheet" href="styles/google-apis.css">
 </head>
 <body>
 
@@ -20,7 +21,7 @@
 
   <!-- ===== Top Toolbar ===== -->
   <header class="app-toolbar">
-    <span class="app-title">📱 Android No-Code Editor <span>Phase 3</span></span>
+    <span class="app-title">📱 Android No-Code Editor <span>Phase 4</span></span>
 
     <!-- Undo / Redo -->
     <button class="toolbar-btn" id="btnUndo" disabled title="元に戻す (Ctrl+Z)">↩ Undo</button>
@@ -43,6 +44,9 @@
 
     <!-- Theme generator -->
     <button class="toolbar-btn" id="btnGenerateTheme" title="Material Designテーマ生成">🎨 テーマ生成</button>
+
+    <!-- Google API settings -->
+    <button class="toolbar-btn google-api-btn" id="btnGoogleApiSettings" title="Google API設定">🔑 Google API</button>
 
     <div class="toolbar-spacer"></div>
 
@@ -73,6 +77,7 @@
         <button class="category-tab" data-category="list">リスト</button>
         <button class="category-tab" data-category="material">Material</button>
         <button class="category-tab" data-category="navigation">ナビ</button>
+        <button class="category-tab" data-category="google">Google</button>
         <button class="category-tab" data-category="favorites">★</button>
         <button class="category-tab" data-category="recent">最近</button>
       </div>
@@ -255,7 +260,113 @@
 </div>
 
 
-<!-- ===== Scripts ===== -->
+<!-- ===== Google API Settings Modal ===== -->
+<div class="modal-overlay" id="googleApiModal">
+  <div class="modal" style="max-width:520px;">
+    <div class="modal-title">🔑 Google API 設定</div>
+
+    <div class="google-modal-header">
+      <div class="google-modal-logo">🔑</div>
+      <div class="google-modal-title-block">
+        <h2>Google Maps API キー</h2>
+        <p>MapView コンポーネントの地図表示に使用します</p>
+      </div>
+    </div>
+
+    <div class="api-security-notice">
+      ⚠️ APIキーはローカルストレージに難読化保存されます。本番環境では
+      <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener">
+        Google Cloud Console
+      </a>
+      でキーに制限を設定してください。
+    </div>
+
+    <div class="maps-props-section">
+      <div class="maps-props-section-title">Maps API キー</div>
+      <div class="api-key-group">
+        <input type="password" id="gApiKeyInput" class="api-key-input"
+               placeholder="AIzaSy..." autocomplete="off" spellcheck="false">
+        <button class="api-key-toggle-btn" id="gApiKeyToggle" title="表示/非表示">👁</button>
+      </div>
+      <div class="api-key-status" id="gApiKeyStatus"></div>
+    </div>
+
+    <div class="maps-props-section">
+      <div class="maps-props-section-title">キー取得手順</div>
+      <ol class="api-steps-list">
+        <li>
+          <span class="api-step-num">1</span>
+          <span class="api-step-text">
+            <a href="https://console.cloud.google.com/" target="_blank" rel="noopener">Google Cloud Console</a>
+            でプロジェクトを作成または選択
+          </span>
+        </li>
+        <li>
+          <span class="api-step-num">2</span>
+          <span class="api-step-text">「APIとサービス」→「ライブラリ」から <strong>Maps SDK for Android</strong> を有効化</span>
+        </li>
+        <li>
+          <span class="api-step-num">3</span>
+          <span class="api-step-text">「認証情報」→「認証情報を作成」→「APIキー」をクリック</span>
+        </li>
+        <li>
+          <span class="api-step-num">4</span>
+          <span class="api-step-text">作成されたキーを上のフィールドに貼り付けて「保存」</span>
+        </li>
+        <li>
+          <span class="api-step-num">5</span>
+          <span class="api-step-text">「キーを制限」でAndroidアプリのパッケージ名・SHA-1を設定（推奨）</span>
+        </li>
+      </ol>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" id="btnGoogleApiClose">閉じる</button>
+      <button class="btn-primary" id="btnGoogleApiSave">💾 保存</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===== Marker Editor Modal ===== -->
+<div class="modal-overlay" id="markerEditorModal">
+  <div class="modal" style="max-width:460px;">
+    <div class="modal-title" id="markerEditorModalTitle">📍 マーカーを追加</div>
+
+    <div class="marker-form">
+      <div>
+        <label for="markerTitleInput" style="font-size:11px;color:var(--on-surface-secondary);margin-bottom:4px;display:block;">タイトル</label>
+        <input type="text" id="markerTitleInput" class="maps-props-input"
+               placeholder="マーカーのタイトル" style="width:100%;box-sizing:border-box;">
+      </div>
+      <div>
+        <label for="markerSnippetInput" style="font-size:11px;color:var(--on-surface-secondary);margin-bottom:4px;display:block;">説明 (Snippet)</label>
+        <input type="text" id="markerSnippetInput" class="maps-props-input"
+               placeholder="クリック時に表示されるテキスト" style="width:100%;box-sizing:border-box;">
+      </div>
+      <div style="display:flex;gap:8px;">
+        <div style="flex:1;">
+          <label for="markerLatInput" style="font-size:11px;color:var(--on-surface-secondary);margin-bottom:4px;display:block;">緯度</label>
+          <input type="number" id="markerLatInput" class="maps-props-input"
+                 value="35.6762" step="0.0001" min="-90" max="90" style="width:100%;box-sizing:border-box;">
+        </div>
+        <div style="flex:1;">
+          <label for="markerLngInput" style="font-size:11px;color:var(--on-surface-secondary);margin-bottom:4px;display:block;">経度</label>
+          <input type="number" id="markerLngInput" class="maps-props-input"
+                 value="139.6503" step="0.0001" min="-180" max="180" style="width:100%;box-sizing:border-box;">
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-actions" style="margin-top:16px;">
+      <button class="btn-secondary" id="btnMarkerEditorClose">キャンセル</button>
+      <button class="btn-primary" id="btnMarkerEditorSave">📍 追加</button>
+    </div>
+  </div>
+</div>
+
+
+
 <!-- Phase 1: Core -->
 <script src="scripts/components.js"></script>
 
@@ -270,6 +381,12 @@
 <script src="scripts/layout-manager.js"></script>
 <script src="scripts/codeGenerator.js"></script>
 <script src="scripts/samples.js"></script>
+
+<!-- Phase 4: Google API Integration -->
+<script src="scripts/google-apis/api-manager.js"></script>
+<script src="scripts/google-apis/markers.js"></script>
+<script src="scripts/google-apis/google-maps-codegen.js"></script>
+<script src="scripts/google-apis/maps.js"></script>
 
 <!-- Editor core (must be last) -->
 <script src="scripts/editor.js"></script>
@@ -301,6 +418,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Theme generator modal setup
   setupThemeGenerator();
+
+  // Google API modal setup
+  setupGoogleApiModal();
 
   // Strings copy
   const copyStringsBtn = document.getElementById('btnCopyStrings');
@@ -358,20 +478,37 @@ function updateDepsPanel() {
     }
   }
 
+  const hasMapView = editor._components.some(c => c.type === 'MapView');
+  const project = typeof projectManager !== 'undefined' ? projectManager.getCurrentProject() : null;
+  const packageName = project ? project.packageName : 'com.example.myapp';
+  const appName     = project ? project.appName     : 'MyApp';
+
   // Update build.gradle
   const gradleOut = document.getElementById('gradleOutput');
-  if (gradleOut && typeof MATERIAL_DESIGN !== 'undefined') {
-    gradleOut.textContent = MATERIAL_DESIGN.generateGradleDependencies(deps);
+  if (gradleOut) {
+    if (hasMapView && typeof GoogleMapsCodegen !== 'undefined') {
+      gradleOut.textContent = GoogleMapsCodegen.generateGradleContent({ appId: packageName });
+    } else if (typeof MATERIAL_DESIGN !== 'undefined') {
+      gradleOut.textContent = MATERIAL_DESIGN.generateGradleDependencies(deps);
+    }
   }
 
   // Update manifest
   const manifestOut = document.getElementById('manifestOutput');
-  if (manifestOut && typeof MATERIAL_DESIGN !== 'undefined') {
-    const project = typeof projectManager !== 'undefined' ? projectManager.getCurrentProject() : null;
-    manifestOut.textContent = MATERIAL_DESIGN.generateManifestXml({
-      packageName: project ? project.packageName : 'com.example.myapp',
-      appName: project ? project.appName : 'MyApp',
-    });
+  if (manifestOut) {
+    if (hasMapView && typeof GoogleMapsCodegen !== 'undefined') {
+      const apiKey = typeof GoogleApiManager !== 'undefined'
+        ? GoogleApiManager.getApiKey('maps') || 'YOUR_GOOGLE_MAPS_API_KEY'
+        : 'YOUR_GOOGLE_MAPS_API_KEY';
+      manifestOut.textContent = GoogleMapsCodegen.generateManifestXml({
+        packageName,
+        appName,
+        apiKey,
+        needsLocation: editor._components.some(c => c.type === 'MapView' && c.props && c.props.showMyLocation),
+      });
+    } else if (typeof MATERIAL_DESIGN !== 'undefined') {
+      manifestOut.textContent = MATERIAL_DESIGN.generateManifestXml({ packageName, appName });
+    }
   }
 }
 
@@ -455,6 +592,109 @@ function downloadFile(filename, content, mimeType) {
   a.download = filename;
   a.click();
   URL.revokeObjectURL(url);
+}
+
+// ---- Google API Modal ----
+function setupGoogleApiModal() {
+  const openBtn   = document.getElementById('btnGoogleApiSettings');
+  const modal     = document.getElementById('googleApiModal');
+  const closeBtn  = document.getElementById('btnGoogleApiClose');
+  const saveBtn   = document.getElementById('btnGoogleApiSave');
+  const keyInput  = document.getElementById('gApiKeyInput');
+  const keyToggle = document.getElementById('gApiKeyToggle');
+  const keyStatus = document.getElementById('gApiKeyStatus');
+
+  if (!openBtn || !modal) return;
+
+  // Pre-fill saved key
+  if (keyInput && typeof GoogleApiManager !== 'undefined') {
+    keyInput.value = GoogleApiManager.getApiKey('maps') || '';
+  }
+
+  openBtn.addEventListener('click', () => {
+    if (keyInput && typeof GoogleApiManager !== 'undefined') {
+      keyInput.value = GoogleApiManager.getApiKey('maps') || '';
+    }
+    _updateApiKeyStatus();
+    modal.style.display = 'flex';
+  });
+
+  if (closeBtn) closeBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+
+  if (keyToggle && keyInput) {
+    keyToggle.addEventListener('click', () => {
+      keyInput.type = keyInput.type === 'password' ? 'text' : 'password';
+      keyToggle.textContent = keyInput.type === 'password' ? '👁' : '🙈';
+    });
+  }
+
+  if (keyInput) keyInput.addEventListener('input', _updateApiKeyStatus);
+
+  if (saveBtn) {
+    saveBtn.addEventListener('click', () => {
+      const key = keyInput ? keyInput.value.trim() : '';
+      if (typeof GoogleApiManager !== 'undefined') {
+        GoogleApiManager.setApiKey('maps', key);
+        if (key) GoogleApiManager.markApiUsed('Maps SDK for Android');
+      }
+      if (keyStatus) {
+        keyStatus.textContent = key ? '✓ 保存しました' : '(キーをクリアしました)';
+        keyStatus.className = 'api-key-status ok';
+      }
+      setTimeout(() => { modal.style.display = 'none'; }, 800);
+    });
+  }
+
+  function _updateApiKeyStatus() {
+    if (!keyInput || !keyStatus) return;
+    const key = keyInput.value.trim();
+    if (!key) {
+      keyInput.className = 'api-key-input';
+      keyStatus.textContent = '';
+      return;
+    }
+    const valid = typeof GoogleApiManager !== 'undefined'
+      ? GoogleApiManager.validateApiKey(key)
+      : key.length >= 20;
+    keyInput.className = `api-key-input ${valid ? 'valid' : 'invalid'}`;
+    keyStatus.textContent = valid ? '✓ 有効なキー形式です' : '⚠ 無効なキー形式です（"AIzaSy..." で始まる文字列を入力してください）';
+    keyStatus.className = `api-key-status ${valid ? 'ok' : 'error'}`;
+  }
+
+  // ---- Marker Editor Modal ----
+  const markerModal   = document.getElementById('markerEditorModal');
+  const markerClose   = document.getElementById('btnMarkerEditorClose');
+  const markerSave    = document.getElementById('btnMarkerEditorSave');
+
+  if (markerClose && markerModal) {
+    markerClose.addEventListener('click', () => { markerModal.style.display = 'none'; });
+  }
+  if (markerModal) {
+    markerModal.addEventListener('click', (e) => {
+      if (e.target === markerModal) markerModal.style.display = 'none';
+    });
+  }
+
+  if (markerSave && markerModal) {
+    markerSave.addEventListener('click', () => {
+      const title   = (document.getElementById('markerTitleInput')   || {}).value || 'マーカー';
+      const snippet = (document.getElementById('markerSnippetInput') || {}).value || '';
+      const lat     = parseFloat((document.getElementById('markerLatInput') || {}).value || '35.6762');
+      const lng     = parseFloat((document.getElementById('markerLngInput') || {}).value || '139.6503');
+
+      // Find the currently selected MapView component id
+      const editingMapId = markerModal.dataset.mapId || '';
+      if (editingMapId && typeof markerManager !== 'undefined') {
+        markerManager.addMarker(editingMapId, { title, snippet, lat, lng });
+        // Refresh the marker list in the properties panel if visible
+        if (typeof refreshMapPropertiesPanel === 'function') {
+          refreshMapPropertiesPanel(editingMapId);
+        }
+      }
+      markerModal.style.display = 'none';
+    });
+  }
 }
 </script>
 

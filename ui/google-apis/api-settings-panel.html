@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!--
+  Phase 4: Google API Settings Panel
+  Loaded as a modal fragment – do NOT include <html>/<body> wrappers here;
+  this file is used as reference content only. The actual modal is rendered
+  inline in index.html.
+-->
+<div class="google-modal-header">
+  <div class="google-modal-logo">🔑</div>
+  <div class="google-modal-title-block">
+    <h2>Google API 設定</h2>
+    <p>Google Maps API キーを登録・管理します</p>
+  </div>
+</div>
+
+<!-- Security notice -->
+<div class="api-security-notice">
+  ⚠️ APIキーはブラウザのローカルストレージに難読化して保存されます。<br>
+  本番アプリでは必ず
+  <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener">
+    Google Cloud Console
+  </a>
+  でキーに適切な制限をかけてください。
+</div>
+
+<!-- API Key input -->
+<div class="maps-props-section">
+  <div class="maps-props-section-title">Maps API キー</div>
+  <div class="api-key-group">
+    <input type="password" id="gApiKeyInput" class="api-key-input"
+           placeholder="AIzaSy..." autocomplete="off" spellcheck="false">
+    <button class="api-key-toggle-btn" id="gApiKeyToggle" title="表示/非表示">👁</button>
+  </div>
+  <div class="api-key-status" id="gApiKeyStatus"></div>
+</div>
+
+<!-- Steps guide -->
+<div class="maps-props-section">
+  <div class="maps-props-section-title">キー取得手順</div>
+  <ol class="api-steps-list">
+    <li>
+      <span class="api-step-num">1</span>
+      <span class="api-step-text">
+        <a href="https://console.cloud.google.com/" target="_blank" rel="noopener">Google Cloud Console</a>
+        でプロジェクトを作成または選択
+      </span>
+    </li>
+    <li>
+      <span class="api-step-num">2</span>
+      <span class="api-step-text">
+        「APIとサービス」→「ライブラリ」から
+        <strong>Maps SDK for Android</strong> を有効化
+      </span>
+    </li>
+    <li>
+      <span class="api-step-num">3</span>
+      <span class="api-step-text">
+        「認証情報」→「認証情報を作成」→「APIキー」をクリック
+      </span>
+    </li>
+    <li>
+      <span class="api-step-num">4</span>
+      <span class="api-step-text">
+        作成されたキーを上のフィールドに貼り付けて「保存」
+      </span>
+    </li>
+    <li>
+      <span class="api-step-num">5</span>
+      <span class="api-step-text">
+        「キーを制限」でAndroidアプリのパッケージ名・SHA-1を設定（推奨）
+      </span>
+    </li>
+  </ol>
+</div>

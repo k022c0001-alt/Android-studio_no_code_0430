@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<!--
+  Phase 4: MapView Properties Panel Reference
+  Loaded inline in index.html as modal content. Provides the UI
+  for editing MapView properties and managing markers.
+-->
+
+<!-- Map preview -->
+<div class="maps-preview-container" id="mapsPreviewContainer">
+  <div class="maps-preview-placeholder" id="mapsPreviewPlaceholder">
+    <div class="preview-icon">🗺️</div>
+    <div>APIキーを設定するとプレビューが表示されます</div>
+  </div>
+</div>
+
+<!-- Map type chips -->
+<div class="maps-props-section">
+  <div class="maps-props-section-title">マップタイプ</div>
+  <div class="map-type-chips" id="mapTypeChips">
+    <div class="map-type-chip active" data-type="normal">Normal</div>
+    <div class="map-type-chip" data-type="satellite">Satellite</div>
+    <div class="map-type-chip" data-type="terrain">Terrain</div>
+    <div class="map-type-chip" data-type="hybrid">Hybrid</div>
+  </div>
+</div>
+
+<!-- Position settings -->
+<div class="maps-props-section">
+  <div class="maps-props-section-title">初期位置</div>
+  <div class="maps-props-row">
+    <span class="maps-props-label">緯度</span>
+    <input type="number" class="maps-props-input" id="mapLatInput"
+           value="35.6762" step="0.0001" min="-90" max="90">
+  </div>
+  <div class="maps-props-row">
+    <span class="maps-props-label">経度</span>
+    <input type="number" class="maps-props-input" id="mapLngInput"
+           value="139.6503" step="0.0001" min="-180" max="180">
+  </div>
+  <div class="maps-props-row">
+    <span class="maps-props-label">ズーム</span>
+    <input type="range" class="maps-props-input" id="mapZoomSlider"
+           value="12" min="1" max="21" step="1">
+    <span class="maps-zoom-value" id="mapZoomValue">12</span>
+  </div>
+</div>
+
+<!-- Marker management -->
+<div class="maps-props-section">
+  <div class="maps-props-section-title">マーカー</div>
+  <div class="marker-list" id="markerList">
+    <div style="font-size:12px;color:var(--on-surface-secondary);padding:8px 0;">
+      マーカーはまだ追加されていません
+    </div>
+  </div>
+  <button class="marker-add-btn" id="markerAddBtn">＋ マーカーを追加</button>
+</div>
+
+<!-- Templates -->
+<div class="maps-props-section">
+  <div class="maps-props-section-title">テンプレート</div>
+  <div class="maps-template-grid">
+    <div class="maps-template-card" data-template="japan">
+      <div class="template-icon">🗾</div>
+      <div class="template-name">日本地図</div>
+      <div class="template-desc">全国表示</div>
+    </div>
+    <div class="maps-template-card" data-template="tokyo">
+      <div class="template-icon">🗼</div>
+      <div class="template-name">東京駅周辺</div>
+      <div class="template-desc">ズーム15</div>
+    </div>
+    <div class="maps-template-card" data-template="multi-marker">
+      <div class="template-icon">📍</div>
+      <div class="template-name">複数マーカー</div>
+      <div class="template-desc">3地点サンプル</div>
+    </div>
+    <div class="maps-template-card" data-template="satellite">
+      <div class="template-icon">🛰️</div>
+      <div class="template-name">衛星写真</div>
+      <div class="template-desc">Satellite表示</div>
+    </div>
+  </div>
+</div>
