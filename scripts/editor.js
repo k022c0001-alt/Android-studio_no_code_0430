@@ -498,6 +498,7 @@ class Editor {
         });
         const latEl = document.getElementById('markerLatInput');
         const lngEl = document.getElementById('markerLngInput');
+        // Default to the MapView component's current center position
         if (latEl) latEl.value = comp.props && comp.props.lat !== undefined ? comp.props.lat : 35.6762;
         if (lngEl) lngEl.value = comp.props && comp.props.lng !== undefined ? comp.props.lng : 139.6503;
         modal.style.display = 'flex';

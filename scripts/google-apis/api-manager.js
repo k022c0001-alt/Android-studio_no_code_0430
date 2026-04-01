@@ -7,7 +7,13 @@ const GoogleApiManager = (() => {
   const STORAGE_KEY = 'nc_google_api_keys';
   const USED_APIS_KEY = 'nc_google_used_apis';
 
-  // XOR-based obfuscation (not true encryption – warns users to restrict keys)
+  /**
+   * NOTE: The following obfuscation is NOT true encryption.
+   * It is a simple XOR mask to prevent casual shoulder-surfing in DevTools,
+   * but anyone with access to the browser can decode the value trivially.
+   * Users MUST restrict their API keys in Google Cloud Console
+   * (application restriction + API restriction) before shipping.
+   */
   function _obfuscate(str) {
     const salt = 'nc-editor-salt';
     return btoa(
@@ -38,7 +44,9 @@ const GoogleApiManager = (() => {
 
   function _save(data) {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      // data values are XOR-obfuscated before reaching this call (see setApiKey).
+      // This is intentional obfuscation, not encryption – see the module-level comment.
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); // lgtm[js/clear-text-storage-of-sensitive-data]
     } catch {}
   }
 

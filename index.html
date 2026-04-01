@@ -687,10 +687,8 @@ function setupGoogleApiModal() {
       const editingMapId = markerModal.dataset.mapId || '';
       if (editingMapId && typeof markerManager !== 'undefined') {
         markerManager.addMarker(editingMapId, { title, snippet, lat, lng });
-        // Refresh the marker list in the properties panel if visible
-        if (typeof refreshMapPropertiesPanel === 'function') {
-          refreshMapPropertiesPanel(editingMapId);
-        }
+        // The markerManager subscription in editor._renderMapViewExtra handles
+        // refreshing the marker list and code output automatically.
       }
       markerModal.style.display = 'none';
     });

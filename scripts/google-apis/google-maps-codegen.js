@@ -6,6 +6,11 @@
 
 const GoogleMapsCodegen = (() => {
 
+  // Default map center (Tokyo Station area)
+  const DEFAULT_LAT  = 35.6762;
+  const DEFAULT_LNG  = 139.6503;
+  const DEFAULT_ZOOM = 12;
+
   /**
    * Generate the AndroidManifest.xml additions required for Google Maps.
    * @param {Object} options
@@ -156,20 +161,21 @@ dependencies {
     const activityName = options.activityName || 'MainActivity';
     const props        = (mapComponent && mapComponent.props) || {};
     const id           = props.id || 'map_view';
-    const lat          = props.lat !== undefined ? props.lat : 35.6762;
-    const lng          = props.lng !== undefined ? props.lng : 139.6503;
-    const zoom         = props.zoom !== undefined ? props.zoom : 12;
+    const lat          = props.lat !== undefined ? props.lat : DEFAULT_LAT;
+    const lng          = props.lng !== undefined ? props.lng : DEFAULT_LNG;
+    const zoom         = props.zoom !== undefined ? props.zoom : DEFAULT_ZOOM;
     const showMyLoc    = props.showMyLocation ? 'true' : 'false';
 
     const markerCode = markers.length > 0
-      ? markers.map(m => {
+      ? markers.map((m, idx) => {
           const mLat = m.lat !== undefined ? m.lat : lat;
           const mLng = m.lng !== undefined ? m.lng : lng;
-          return `        val ${_safeId(m.title || 'marker')}Options = MarkerOptions()
+          const varName = _safeId(m.title || 'marker') + '_' + idx;
+          return `        val ${varName}Options = MarkerOptions()
             .position(LatLng(${mLat}, ${mLng}))
             .title("${_escapeKt(m.title || 'マーカー')}")
             .snippet("${_escapeKt(m.snippet || '')}")
-        mMap.addMarker(${_safeId(m.title || 'marker')}Options)`;
+        mMap.addMarker(${varName}Options)`;
         }).join('\n\n')
       : `        // マーカー追加例:
         // val markerOptions = MarkerOptions()
