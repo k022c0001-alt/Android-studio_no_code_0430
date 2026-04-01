@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Android No-Code Editor</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="styles/phase3-components.css">
+  <link rel="stylesheet" href="styles/material-design.css">
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <!-- ===== Top Toolbar ===== -->
+  <header class="app-toolbar">
+    <span class="app-title">📱 Android No-Code Editor <span>Phase 3</span></span>
+
+    <!-- Undo / Redo -->
+    <button class="toolbar-btn" id="btnUndo" disabled title="元に戻す (Ctrl+Z)">↩ Undo</button>
+    <button class="toolbar-btn" id="btnRedo" disabled title="やり直す (Ctrl+Y)">↪ Redo</button>
+
+    <div class="toolbar-divider"></div>
+
+    <!-- Project controls -->
+    <button class="toolbar-btn" id="btnSave" title="保存 (Ctrl+S)">💾 保存</button>
+    <button class="toolbar-btn" id="btnClear" title="クリア">🗑 クリア</button>
+
+    <div class="toolbar-divider"></div>
+
+    <!-- Export -->
+    <button class="toolbar-btn" id="btnExportXml" title="XMLをダウンロード">📥 XML</button>
+    <button class="toolbar-btn" id="btnExportKt" title="Kotlinをダウンロード">📥 Kotlin</button>
+    <button class="toolbar-btn" id="btnExportJson" title="JSONで保存">📦 JSON</button>
+
+    <div class="toolbar-divider"></div>
+
+    <!-- Theme generator -->
+    <button class="toolbar-btn" id="btnGenerateTheme" title="Material Designテーマ生成">🎨 テーマ生成</button>
+
+    <div class="toolbar-spacer"></div>
+
+    <!-- Device selector -->
+    <button class="toolbar-btn active" data-device="phone_portrait" title="スマートフォン（縦）">📱</button>
+    <button class="toolbar-btn" data-device="phone_landscape" title="スマートフォン（横）">📱↔</button>
+    <button class="toolbar-btn" data-device="tablet_portrait" title="タブレット（縦）">📟</button>
+  </header>
+
+  <!-- ===== Main Body ===== -->
+  <div class="app-body">
+
+    <!-- ===== Left Sidebar: Component Palette ===== -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title">コンポーネント</div>
+        <div class="search-box">
+          <input type="text" id="componentSearch" class="search-input" placeholder="コンポーネントを検索..." autocomplete="off">
+          <span class="search-icon">🔍</span>
+        </div>
+      </div>
+
+      <!-- Category tabs -->
+      <div class="category-tabs">
+        <button class="category-tab active" data-category="all">すべて</button>
+        <button class="category-tab" data-category="basic">基本</button>
+        <button class="category-tab" data-category="layout">レイアウト</button>
+        <button class="category-tab" data-category="list">リスト</button>
+        <button class="category-tab" data-category="material">Material</button>
+        <button class="category-tab" data-category="navigation">ナビ</button>
+        <button class="category-tab" data-category="favorites">★</button>
+        <button class="category-tab" data-category="recent">最近</button>
+      </div>
+
+      <!-- Component list -->
+      <div class="palette-scroll">
+        <div id="componentPalette">
+          <div class="palette-empty">読み込み中...</div>
+        </div>
+      </div>
+
+      <!-- Sample templates -->
+      <div class="samples-section">
+        <div class="samples-title">サンプルテンプレート</div>
+        <div class="samples-list">
+          <button class="sample-btn" data-sample="options_menu">☰ オプションメニュー</button>
+          <button class="sample-btn" data-sample="list_view">📋 リストビュー</button>
+          <button class="sample-btn" data-sample="list_select">🔽 リスト選択</button>
+          <button class="sample-btn" data-sample="login_form">🔐 ログインフォーム</button>
+          <button class="sample-btn" data-sample="settings">⚙️ 設定画面</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===== Center: Canvas ===== -->
+    <main class="canvas-area">
+      <!-- Canvas toolbar -->
+      <div class="canvas-toolbar">
+        <span class="canvas-toolbar-label">ズーム:</span>
+        <button class="canvas-btn" id="btnZoomOut" title="ズームアウト">－</button>
+        <span class="zoom-label" id="zoomLabel">100%</span>
+        <button class="canvas-btn" id="btnZoomIn" title="ズームイン">＋</button>
+        <button class="canvas-btn" id="btnZoomReset" title="ズームリセット">↺</button>
+
+        <div style="width:1px;height:20px;background:var(--divider);margin:0 8px;"></div>
+
+        <button class="canvas-btn" id="btnGrid" title="グリッド表示">⊞ グリッド</button>
+
+        <div style="width:1px;height:20px;background:var(--divider);margin:0 8px;"></div>
+
+        <span class="canvas-toolbar-label" id="componentCount" style="font-size:12px;color:var(--on-surface-secondary);">0 コンポーネント</span>
+      </div>
+
+      <!-- Scrollable canvas area -->
+      <div class="canvas-scroll">
+        <div class="canvas-wrapper" id="canvasWrapper">
+          <div id="canvas"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ===== Right Panel: Properties + Code ===== -->
+    <aside class="right-panel">
+      <div class="panel-tabs">
+        <button class="panel-tab active" id="tabProperties" onclick="switchRightPanel('properties')">プロパティ</button>
+        <button class="panel-tab" id="tabCode" onclick="switchRightPanel('code')">コード</button>
+        <button class="panel-tab" id="tabDeps" onclick="switchRightPanel('deps')">依存関係</button>
+      </div>
+
+      <!-- Properties panel -->
+      <div class="panel-content" id="panelProperties">
+        <div id="propertiesPanel">
+          <div class="properties-empty">
+            <div>コンポーネントを選択</div>
+            <div class="properties-empty-hint">クリックして選択すると<br>プロパティを編集できます</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Code panel -->
+      <div class="panel-content" id="panelCode" style="display:none;">
+        <div class="code-tabs">
+          <button class="code-tab active" data-code-tab="xml">XML</button>
+          <button class="code-tab" data-code-tab="kotlin">Kotlin</button>
+          <button class="code-tab" data-code-tab="strings">strings.xml</button>
+        </div>
+
+        <!-- XML panel -->
+        <div data-code-panel="xml" class="code-panel" style="display:flex;flex-direction:column;">
+          <div class="code-actions">
+            <button class="code-action-btn" id="btnCopyXml">📋 コピー</button>
+            <button class="code-action-btn" id="btnExportXml2" onclick="document.getElementById('btnExportXml').click()">⬇ DL</button>
+          </div>
+          <div class="code-output-wrapper">
+            <pre class="code-output" id="xmlOutput">&lt;!-- コンポーネントを追加するとXMLが生成されます --&gt;</pre>
+          </div>
+        </div>
+
+        <!-- Kotlin panel -->
+        <div data-code-panel="kotlin" class="code-panel" style="display:none;flex-direction:column;">
+          <div class="code-actions">
+            <button class="code-action-btn" id="btnCopyKt">📋 コピー</button>
+            <button class="code-action-btn" id="btnExportKt2" onclick="document.getElementById('btnExportKt').click()">⬇ DL</button>
+          </div>
+          <div class="code-output-wrapper">
+            <pre class="code-output" id="kotlinOutput">// コンポーネントを追加するとKotlinコードが生成されます</pre>
+          </div>
+        </div>
+
+        <!-- strings.xml panel -->
+        <div data-code-panel="strings" class="code-panel" style="display:none;flex-direction:column;">
+          <div class="code-actions">
+            <button class="code-action-btn" id="btnCopyStrings">📋 コピー</button>
+          </div>
+          <div class="code-output-wrapper">
+            <pre class="code-output" id="stringsOutput">&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;resources&gt;
+    &lt;string name="app_name"&gt;MyApp&lt;/string&gt;
+&lt;/resources&gt;</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dependencies panel -->
+      <div class="panel-content" id="panelDeps" style="display:none;">
+        <div style="padding:12px;">
+          <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--on-surface-secondary);margin-bottom:8px;">
+            必要な依存関係
+          </div>
+          <div id="depsOutput" style="font-size:12px;color:var(--on-surface-secondary);">
+            コンポーネントを追加すると依存関係が表示されます
+          </div>
+          <hr class="code-section-sep" style="margin-top:16px;">
+          <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--on-surface-secondary);margin-bottom:8px;margin-top:12px;">
+            AndroidManifest.xml
+          </div>
+          <div class="code-output-wrapper" style="max-height:200px;overflow-y:auto;background:var(--surface-variant);border-radius:4px;">
+            <pre class="code-output" id="manifestOutput" style="font-size:10px;padding:8px;"></pre>
+          </div>
+          <hr class="code-section-sep">
+          <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--on-surface-secondary);margin-bottom:8px;">
+            build.gradle (app)
+          </div>
+          <div class="code-output-wrapper" style="max-height:200px;overflow-y:auto;background:var(--surface-variant);border-radius:4px;">
+            <pre class="code-output" id="gradleOutput" style="font-size:10px;padding:8px;"></pre>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+  </div><!-- /app-body -->
+</div><!-- /app-wrapper -->
+
+
+<!-- ===== Theme Generator Modal ===== -->
+<div class="modal-overlay" id="themeModal">
+  <div class="modal" style="max-width:560px;">
+    <div class="modal-title">🎨 Material Design テーマ生成</div>
+
+    <div class="theme-gen-panel">
+      <label class="theme-field-label">アプリ名</label>
+      <input type="text" class="theme-field-input" id="themeAppName" value="MyApp" placeholder="MyApp">
+
+      <label class="theme-field-label">パッケージ名</label>
+      <input type="text" class="theme-field-input" id="themePackageName" value="com.example.myapp" placeholder="com.example.myapp">
+
+      <label class="theme-field-label">テーマカラー</label>
+      <div class="color-swatch-grid" id="colorSwatches"></div>
+
+      <label class="theme-field-label">プレビュー</label>
+      <div class="theme-gen-preview">
+        <div class="theme-gen-preview-bar" id="themePreviewBar" style="background:#6750A4;">
+          <span id="themePreviewTitle">MyApp</span>
+        </div>
+        <div class="theme-gen-preview-content">
+          <button class="md3-btn md3-btn-filled" id="themePreviewBtn" style="background:#6750A4;">確認</button>
+          <button class="md3-btn md3-btn-outlined" id="themePreviewBtnOutlined" style="color:#6750A4;border-color:#79747E;">キャンセル</button>
+          <div class="md3-chip md3-chip-filter" id="themePreviewChip" style="background:#E8DEF8;color:#21005D;">チップ</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="document.getElementById('themeModal').style.display='none'">閉じる</button>
+      <button class="btn-primary" id="btnDownloadTheme">📥 themes.xml を生成</button>
+      <button class="btn-primary" id="btnDownloadColors">📥 colors.xml を生成</button>
+      <button class="btn-primary" id="btnDownloadManifest">📥 Manifest を生成</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===== Scripts ===== -->
+<!-- Phase 1: Core -->
+<script src="scripts/components.js"></script>
+
+<!-- Phase 2: Editor enhancements -->
+<script src="scripts/undoRedo.js"></script>
+<script src="scripts/projectManager.js"></script>
+
+<!-- Phase 3: Extended components and systems -->
+<script src="scripts/components-extended.js"></script>
+<script src="scripts/component-registry.js"></script>
+<script src="scripts/material-design.js"></script>
+<script src="scripts/layout-manager.js"></script>
+<script src="scripts/codeGenerator.js"></script>
+<script src="scripts/samples.js"></script>
+
+<!-- Editor core (must be last) -->
+<script src="scripts/editor.js"></script>
+
+<!-- ===== Inline Initialization ===== -->
+<script>
+// Right panel tab switcher
+function switchRightPanel(tab) {
+  document.getElementById('panelProperties').style.display = tab === 'properties' ? '' : 'none';
+  document.getElementById('panelCode').style.display = tab === 'code' ? '' : 'none';
+  document.getElementById('panelDeps').style.display = tab === 'deps' ? '' : 'none';
+
+  document.getElementById('tabProperties').classList.toggle('active', tab === 'properties');
+  document.getElementById('tabCode').classList.toggle('active', tab === 'code');
+  document.getElementById('tabDeps').classList.toggle('active', tab === 'deps');
+}
+
+// Code tab switching
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-code-tab]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-code-tab]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('[data-code-panel]').forEach(panel => {
+        panel.style.display = (panel.dataset.codePanel === btn.dataset.codeTab) ? 'flex' : 'none';
+      });
+    });
+  });
+
+  // Theme generator modal setup
+  setupThemeGenerator();
+
+  // Strings copy
+  const copyStringsBtn = document.getElementById('btnCopyStrings');
+  if (copyStringsBtn) {
+    copyStringsBtn.addEventListener('click', () => {
+      const out = document.getElementById('stringsOutput');
+      if (out) navigator.clipboard.writeText(out.textContent);
+    });
+  }
+
+  // Component count update (hook into canvas mutations)
+  const canvas = document.getElementById('canvas');
+  if (canvas) {
+    const observer = new MutationObserver(() => {
+      const count = canvas.querySelectorAll('.canvas-component').length;
+      const label = document.getElementById('componentCount');
+      if (label) label.textContent = `${count} コンポーネント`;
+    });
+    observer.observe(canvas, { childList: true, subtree: false });
+  }
+
+  // Auto-update strings.xml and deps when editor changes
+  setInterval(() => {
+    if (typeof editor === 'undefined' || !editor._components) return;
+    updateStringsXml();
+    updateDepsPanel();
+  }, 2000);
+});
+
+function updateStringsXml() {
+  if (typeof editor === 'undefined' || !editor._components) return;
+  if (typeof componentRegistry === 'undefined') return;
+  const codeGen = new CodeGenerator(componentRegistry);
+  const project = typeof projectManager !== 'undefined' ? projectManager.getCurrentProject() : null;
+  const xml = codeGen.generateStringsXml(editor._components, {
+    appName: project ? project.appName : 'MyApp'
+  });
+  const out = document.getElementById('stringsOutput');
+  if (out) out.textContent = xml;
+}
+
+function updateDepsPanel() {
+  if (typeof editor === 'undefined' || !editor._components) return;
+  if (typeof componentRegistry === 'undefined') return;
+
+  const deps = componentRegistry.getRequiredDependencies(editor._components);
+  const depsOut = document.getElementById('depsOutput');
+  if (depsOut) {
+    if (deps.length === 0) {
+      depsOut.innerHTML = '<span style="color:var(--success)">✓ 追加の依存関係は不要です</span>';
+    } else {
+      depsOut.innerHTML = deps.map(d =>
+        `<div style="font-family:var(--font-mono);font-size:11px;padding:4px 6px;background:var(--surface-variant);border-radius:3px;margin-bottom:4px;word-break:break-all;">${d}</div>`
+      ).join('');
+    }
+  }
+
+  // Update build.gradle
+  const gradleOut = document.getElementById('gradleOutput');
+  if (gradleOut && typeof MATERIAL_DESIGN !== 'undefined') {
+    gradleOut.textContent = MATERIAL_DESIGN.generateGradleDependencies(deps);
+  }
+
+  // Update manifest
+  const manifestOut = document.getElementById('manifestOutput');
+  if (manifestOut && typeof MATERIAL_DESIGN !== 'undefined') {
+    const project = typeof projectManager !== 'undefined' ? projectManager.getCurrentProject() : null;
+    manifestOut.textContent = MATERIAL_DESIGN.generateManifestXml({
+      packageName: project ? project.packageName : 'com.example.myapp',
+      appName: project ? project.appName : 'MyApp',
+    });
+  }
+}
+
+function setupThemeGenerator() {
+  const swatchGrid = document.getElementById('colorSwatches');
+  if (!swatchGrid || typeof MATERIAL_DESIGN === 'undefined') return;
+
+  let selectedSeed = MATERIAL_DESIGN.colorSeeds[0];
+
+  MATERIAL_DESIGN.colorSeeds.forEach((seed, i) => {
+    const swatch = document.createElement('div');
+    swatch.className = `color-swatch${i === 0 ? ' selected' : ''}`;
+    swatch.style.background = seed.primary;
+    swatch.title = seed.name;
+    swatch.addEventListener('click', () => {
+      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+      swatch.classList.add('selected');
+      selectedSeed = seed;
+      updateThemePreview(seed);
+    });
+    swatchGrid.appendChild(swatch);
+  });
+
+  function updateThemePreview(seed) {
+    const bar = document.getElementById('themePreviewBar');
+    const btn = document.getElementById('themePreviewBtn');
+    const btnOut = document.getElementById('themePreviewBtnOutlined');
+    const chip = document.getElementById('themePreviewChip');
+    if (bar) bar.style.background = seed.primary;
+    if (btn) { btn.style.background = seed.primary; btn.style.color = '#fff'; }
+    if (btnOut) { btnOut.style.color = seed.primary; }
+    if (chip) { chip.style.color = seed.primary; }
+  }
+
+  // Sync app name to preview
+  const appNameInput = document.getElementById('themeAppName');
+  if (appNameInput) {
+    appNameInput.addEventListener('input', () => {
+      const t = document.getElementById('themePreviewTitle');
+      if (t) t.textContent = appNameInput.value || 'MyApp';
+    });
+  }
+
+  // Download buttons
+  const downloadThemeBtn = document.getElementById('btnDownloadTheme');
+  if (downloadThemeBtn) {
+    downloadThemeBtn.addEventListener('click', () => {
+      const xml = MATERIAL_DESIGN.generateThemesXml({
+        appName: document.getElementById('themeAppName').value || 'MyApp',
+        seedColor: selectedSeed,
+      });
+      downloadFile('themes.xml', xml, 'text/xml');
+    });
+  }
+
+  const downloadColorsBtn = document.getElementById('btnDownloadColors');
+  if (downloadColorsBtn) {
+    downloadColorsBtn.addEventListener('click', () => {
+      const xml = MATERIAL_DESIGN.generateColorsXml({ seedColor: selectedSeed });
+      downloadFile('colors.xml', xml, 'text/xml');
+    });
+  }
+
+  const downloadManifestBtn = document.getElementById('btnDownloadManifest');
+  if (downloadManifestBtn) {
+    downloadManifestBtn.addEventListener('click', () => {
+      const xml = MATERIAL_DESIGN.generateManifestXml({
+        appName: document.getElementById('themeAppName').value || 'MyApp',
+        packageName: document.getElementById('themePackageName').value || 'com.example.myapp',
+      });
+      downloadFile('AndroidManifest.xml', xml, 'text/xml');
+    });
+  }
+}
+
+function downloadFile(filename, content, mimeType) {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+
+</body>
+</html>

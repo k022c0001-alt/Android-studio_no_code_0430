@@ -1,0 +1,393 @@
+/* ===================================================
+   Phase 3: Component-specific Styles
+   Additional styles for new Phase 3 components
+   =================================================== */
+
+/* ---- Component Category Badge ---- */
+.component-category-badge {
+  display: inline-block;
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-left: 4px;
+}
+
+.badge-basic    { background: #E3F2FD; color: #1565C0; }
+.badge-layout   { background: #E8F5E9; color: #2E7D32; }
+.badge-list     { background: #FFF3E0; color: #E65100; }
+.badge-material { background: #EDE7F6; color: #4527A0; }
+.badge-navigation { background: #FCE4EC; color: #880E4F; }
+
+/* ---- Palette Category Group Heading ---- */
+.palette-group-heading {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--on-surface-secondary);
+  padding: 8px 10px 4px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.palette-group-heading::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--divider);
+}
+
+/* ---- Layout Component Visual ---- */
+.layout-preview {
+  border: 2px dashed;
+  border-radius: 4px;
+  padding: 8px;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.layout-linear   { border-color: #2196F3; color: #2196F3; background: rgba(33,150,243,0.04); }
+.layout-frame    { border-color: #FF9800; color: #FF9800; background: rgba(255,152,0,0.04); }
+.layout-grid     { border-color: #4CAF50; color: #4CAF50; background: rgba(76,175,80,0.04); }
+.layout-relative { border-color: #E91E63; color: #E91E63; background: rgba(233,30,99,0.04); }
+.layout-constraint { border-color: #9C27B0; color: #9C27B0; background: rgba(156,39,176,0.04); }
+
+/* ---- Material Component Highlights ---- */
+.material-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-family: var(--font-family);
+}
+
+.material-fab {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.material-fab.mini {
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+}
+
+/* ---- RecyclerView Item Preview ---- */
+.rv-preview-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+  gap: 10px;
+}
+
+.rv-preview-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.rv-preview-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.rv-preview-title {
+  font-size: 14px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rv-preview-subtitle {
+  font-size: 12px;
+  color: #666;
+  margin-top: 2px;
+}
+
+/* ---- TabLayout Preview ---- */
+.tab-preview {
+  display: flex;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.tab-preview-item {
+  flex: 1;
+  padding: 10px 8px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* ---- ViewPager Preview ---- */
+.viewpager-preview {
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.viewpager-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80px;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+}
+
+.viewpager-dots {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px;
+  background: white;
+}
+
+.viewpager-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ccc;
+  transition: background 0.2s;
+}
+
+.viewpager-dot.active { background: var(--primary); }
+
+/* ---- NavigationView Preview ---- */
+.nav-preview {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+  font-family: sans-serif;
+  min-width: 200px;
+}
+
+.nav-preview-header {
+  background: linear-gradient(135deg, #6200EE, #3700B3);
+  padding: 16px;
+  color: white;
+}
+
+.nav-preview-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  margin-bottom: 8px;
+}
+
+.nav-preview-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  border-bottom: 1px solid #eee;
+  font-size: 13px;
+  gap: 10px;
+}
+
+.nav-preview-item.active {
+  background: #EDE7F6;
+  color: #6200EE;
+  font-weight: 500;
+}
+
+/* ---- ImageView Preview Overlay ---- */
+.imageview-preview {
+  border-radius: 4px;
+  overflow: hidden;
+  background: #e8eaf6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7986cb;
+}
+
+/* ---- EditText Preview Focus Indicator ---- */
+.edittext-preview-focused {
+  position: relative;
+}
+
+.edittext-preview-focused::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--primary);
+  border-radius: 1px;
+}
+
+/* ---- ProgressBar animation ---- */
+@keyframes indeterminate {
+  0%   { transform: translateX(-100%); width: 60%; }
+  50%  { transform: translateX(50%); width: 60%; }
+  100% { transform: translateX(200%); width: 60%; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.progress-bar-wrapper {
+  background: #e0e0e0;
+  border-radius: 4px;
+  height: 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-bar-fill.indeterminate {
+  animation: indeterminate 1.5s ease-in-out infinite;
+}
+
+.progress-circular {
+  border: 4px solid #e0e0e0;
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* ---- Slider Preview ---- */
+.slider-preview {
+  padding: 8px 0;
+}
+
+.slider-preview input[type=range] {
+  width: 100%;
+  accent-color: var(--primary);
+}
+
+.slider-value-label {
+  text-align: center;
+  font-size: 11px;
+  color: var(--on-surface-secondary);
+  margin-top: 2px;
+}
+
+/* ---- Component selection highlight animation ---- */
+@keyframes pulse-border {
+  0%   { box-shadow: 0 0 0 0 rgba(98, 0, 238, 0.3); }
+  70%  { box-shadow: 0 0 0 6px rgba(98, 0, 238, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(98, 0, 238, 0); }
+}
+
+.canvas-component.newly-added {
+  animation: pulse-border 0.6s ease-out;
+}
+
+/* ---- Lint issue indicators ---- */
+.lint-warning {
+  border-left: 3px solid #FFC107;
+  padding-left: 8px;
+}
+
+.lint-error {
+  border-left: 3px solid var(--error);
+  padding-left: 8px;
+}
+
+.lint-badge {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+.lint-badge.warning { background: #FFC107; }
+.lint-badge.error { background: var(--error); }
+
+/* ---- Drag placeholder ---- */
+.drop-placeholder {
+  height: 4px;
+  background: var(--primary);
+  border-radius: 2px;
+  margin: 2px 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.drop-placeholder.visible { opacity: 1; }
+
+/* ---- Component container indicator ---- */
+.canvas-component.is-container {
+  background: rgba(0,0,0,0.01);
+}
+
+.canvas-component.is-container .component-preview {
+  min-height: 60px;
+}
+
+/* ---- Theme color swatches ---- */
+.color-swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  padding: 8px 0;
+}
+
+.color-swatch {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.2s, transform 0.2s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.color-swatch:hover,
+.color-swatch.selected {
+  border-color: var(--on-surface);
+  transform: scale(1.1);
+}
+
+/* ---- Dependency alert ---- */
+.dep-alert {
+  background: #FFF3E0;
+  border: 1px solid #FFB74D;
+  border-radius: var(--border-radius-sm);
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #E65100;
+  margin-top: 8px;
+}
+
+.dep-alert strong { display: block; margin-bottom: 4px; }
+
+/* ---- Generated code section separator ---- */
+.code-section-sep {
+  border: none;
+  border-top: 1px dashed var(--divider);
+  margin: 8px 0;
+}

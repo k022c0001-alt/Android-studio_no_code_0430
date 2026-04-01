@@ -1,0 +1,488 @@
+/* ===================================================
+   Phase 3: Material Design Styles
+   Material Design 3 visual language for the preview
+   =================================================== */
+
+/* ---- MD3 Base Typography ---- */
+.md3-display-large   { font-size: 57px; line-height: 64px; font-weight: 400; letter-spacing: -0.25px; }
+.md3-display-medium  { font-size: 45px; line-height: 52px; font-weight: 400; }
+.md3-display-small   { font-size: 36px; line-height: 44px; font-weight: 400; }
+.md3-headline-large  { font-size: 32px; line-height: 40px; font-weight: 400; }
+.md3-headline-medium { font-size: 28px; line-height: 36px; font-weight: 400; }
+.md3-headline-small  { font-size: 24px; line-height: 32px; font-weight: 400; }
+.md3-title-large     { font-size: 22px; line-height: 28px; font-weight: 400; }
+.md3-title-medium    { font-size: 16px; line-height: 24px; font-weight: 500; letter-spacing: 0.15px; }
+.md3-title-small     { font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: 0.1px; }
+.md3-body-large      { font-size: 16px; line-height: 24px; font-weight: 400; letter-spacing: 0.5px; }
+.md3-body-medium     { font-size: 14px; line-height: 20px; font-weight: 400; letter-spacing: 0.25px; }
+.md3-body-small      { font-size: 12px; line-height: 16px; font-weight: 400; letter-spacing: 0.4px; }
+.md3-label-large     { font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: 0.1px; }
+.md3-label-medium    { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.5px; }
+.md3-label-small     { font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.5px; }
+
+/* ---- MD3 Button styles ---- */
+.md3-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 20px;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  font-family: 'Roboto', sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.md3-btn-filled {
+  background: #6750A4;
+  color: white;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.md3-btn-filled:hover {
+  background: #7965AF;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.md3-btn-outlined {
+  background: transparent;
+  color: #6750A4;
+  border: 1px solid #79747E;
+}
+
+.md3-btn-outlined:hover {
+  background: rgba(103, 80, 164, 0.08);
+}
+
+.md3-btn-text {
+  background: transparent;
+  color: #6750A4;
+}
+
+.md3-btn-text:hover {
+  background: rgba(103, 80, 164, 0.08);
+}
+
+.md3-btn-elevated {
+  background: #FFFBFE;
+  color: #6750A4;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2), 0 1px 1px rgba(0,0,0,0.14);
+}
+
+.md3-btn-tonal {
+  background: #E8DEF8;
+  color: #21005D;
+}
+
+.md3-btn-tonal:hover {
+  background: #DED5F1;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}
+
+/* Ripple effect */
+.md3-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  opacity: 0;
+  border-radius: inherit;
+  transition: opacity 0.2s;
+}
+
+.md3-btn:active::after { opacity: 0.12; }
+
+/* ---- MD3 Card styles ---- */
+.md3-card {
+  background: #FFFBFE;
+  border-radius: 12px;
+  padding: 16px;
+  transition: box-shadow 0.2s;
+}
+
+.md3-card-elevated {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
+}
+
+.md3-card-elevated:hover {
+  box-shadow: 0 3px 6px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.md3-card-filled {
+  background: #E6E0E9;
+}
+
+.md3-card-outlined {
+  background: #FFFBFE;
+  border: 1px solid #79747E;
+}
+
+/* ---- MD3 TextField (TextInputLayout style) ---- */
+.md3-textfield {
+  position: relative;
+  padding-top: 16px;
+}
+
+.md3-textfield input {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #79747E;
+  padding: 8px 0;
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+  background: transparent;
+  outline: none;
+  color: #1C1B1F;
+}
+
+.md3-textfield input:focus {
+  border-bottom: 2px solid #6750A4;
+}
+
+.md3-textfield label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 12px;
+  color: #49454F;
+  font-family: 'Roboto', sans-serif;
+  transition: all 0.2s;
+}
+
+.md3-textfield-outlined {
+  border: 1px solid #79747E;
+  border-radius: 4px;
+  padding: 16px;
+}
+
+.md3-textfield-filled {
+  background: #E6E0E9;
+  border-radius: 4px 4px 0 0;
+  padding: 8px 16px;
+  border-bottom: 1px solid #79747E;
+}
+
+/* ---- MD3 Chip styles ---- */
+.md3-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  padding: 6px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Roboto', sans-serif;
+}
+
+.md3-chip-assist {
+  background: #FFFBFE;
+  color: #1C1B1F;
+  border: 1px solid #79747E;
+}
+
+.md3-chip-filter {
+  background: #E8DEF8;
+  color: #21005D;
+}
+
+.md3-chip-input {
+  background: #FFFBFE;
+  color: #1C1B1F;
+  border: 1px solid #79747E;
+}
+
+.md3-chip-suggestion {
+  background: #FFFBFE;
+  color: #1C1B1F;
+  border: 1px solid #79747E;
+}
+
+.md3-chip:hover { box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+
+/* ---- MD3 Navigation ---- */
+.md3-navbar {
+  background: #FFFBFE;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 80px;
+  padding: 12px 8px;
+  box-shadow: 0 -1px 3px rgba(0,0,0,0.1);
+}
+
+.md3-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.md3-nav-indicator {
+  background: transparent;
+  border-radius: 16px;
+  padding: 2px 20px;
+  transition: background 0.2s;
+}
+
+.md3-nav-item.active .md3-nav-indicator {
+  background: #E8DEF8;
+}
+
+.md3-nav-icon { font-size: 22px; }
+.md3-nav-label { font-size: 12px; font-weight: 500; color: #49454F; }
+.md3-nav-item.active .md3-nav-label { color: #6750A4; font-weight: 600; }
+
+/* ---- MD3 Top App Bar ---- */
+.md3-topbar {
+  background: #FFFBFE;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 4px 0 16px;
+  gap: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.md3-topbar.scrolled {
+  background: #E8DEF8;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.md3-topbar-title {
+  flex: 1;
+  font-size: 22px;
+  font-weight: 400;
+  color: #1C1B1F;
+}
+
+.md3-icon-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  transition: background 0.2s;
+}
+
+.md3-icon-btn:hover { background: rgba(0,0,0,0.08); }
+
+/* ---- MD3 FAB ---- */
+.md3-fab {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 16px;
+  padding: 16px;
+  background: #E8DEF8;
+  color: #21005D;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.14);
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.md3-fab.small { border-radius: 12px; padding: 10px; }
+.md3-fab.large { border-radius: 28px; padding: 30px; }
+
+.md3-fab:hover {
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2), 0 3px 6px rgba(0,0,0,0.14);
+  background: #DED5F0;
+}
+
+/* ---- MD3 Dialog ---- */
+.md3-dialog {
+  background: #FFFBFE;
+  border-radius: 28px;
+  padding: 24px;
+  max-width: 560px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+.md3-dialog-title {
+  font-size: 24px;
+  font-weight: 400;
+  color: #1C1B1F;
+  margin-bottom: 16px;
+}
+
+.md3-dialog-body {
+  font-size: 14px;
+  color: #49454F;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.md3-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* ---- MD3 Snackbar ---- */
+.md3-snackbar {
+  background: #313033;
+  color: white;
+  border-radius: 4px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 14px;
+  min-width: 280px;
+  max-width: 560px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+}
+
+.md3-snackbar-action {
+  color: #D0BCFF;
+  font-weight: 500;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 14px;
+}
+
+/* ---- MD3 Progress indicators ---- */
+.md3-progress-linear {
+  height: 4px;
+  background: #E8DEF8;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.md3-progress-linear-fill {
+  height: 100%;
+  background: #6750A4;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.md3-progress-circular {
+  width: 48px;
+  height: 48px;
+}
+
+.md3-progress-circular circle {
+  fill: none;
+  stroke: #6750A4;
+  stroke-width: 4;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  transition: stroke-dashoffset 0.3s ease;
+}
+
+/* ---- MD3 Slider ---- */
+.md3-slider {
+  position: relative;
+  height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.md3-slider input[type=range] {
+  width: 100%;
+  height: 4px;
+  accent-color: #6750A4;
+  cursor: pointer;
+}
+
+.md3-slider-label {
+  position: absolute;
+  top: -24px;
+  background: #6750A4;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ---- MD3 Color system classes ---- */
+.md3-primary            { color: #6750A4; }
+.md3-on-primary         { color: #FFFFFF; }
+.md3-primary-container  { background: #EADDFF; color: #21005D; }
+.md3-secondary          { color: #625B71; }
+.md3-secondary-container{ background: #E8DEF8; color: #1D192B; }
+.md3-tertiary           { color: #7D5260; }
+.md3-tertiary-container { background: #FFD8E4; color: #31111D; }
+.md3-surface            { background: #FFFBFE; }
+.md3-surface-variant    { background: #E7E0EC; }
+.md3-error             { color: #B3261E; }
+.md3-error-container    { background: #F9DEDC; }
+.md3-outline            { border-color: #79747E; }
+
+/* ---- Theme generator panel ---- */
+.theme-gen-panel {
+  padding: 16px;
+}
+
+.theme-gen-preview {
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  margin-top: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.theme-gen-preview-bar {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  font-weight: 600;
+  font-size: 15px;
+  color: white;
+}
+
+.theme-gen-preview-content {
+  background: white;
+  padding: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.theme-field-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--on-surface-secondary);
+  margin-bottom: 4px;
+  display: block;
+}
+
+.theme-field-input {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--divider);
+  border-radius: var(--border-radius-sm);
+  font-size: 13px;
+  font-family: var(--font-family);
+  background: var(--surface-variant);
+  margin-bottom: 10px;
+}
+
+.theme-field-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: white;
+}

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Layout Properties</title>
+<style>
+  body { font-family: Roboto, sans-serif; font-size: 13px; margin: 0; padding: 8px; }
+  .prop-group { margin-bottom: 10px; }
+  label { display: block; font-size: 11px; font-weight: 600; color: #5f6368; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  input, select { width: 100%; padding: 6px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; box-sizing: border-box; }
+  input:focus, select:focus { outline: none; border-color: #6200EE; }
+  .preview { border: 2px dashed #2196F3; border-radius: 8px; padding: 12px; background: rgba(33,150,243,0.04); margin-bottom: 12px; min-height: 80px; display: flex; align-items: center; justify-content: center; color: #2196F3; font-size: 12px; font-weight: 500; }
+  h3 { font-size: 14px; margin: 0 0 10px; color: #202124; }
+  .layout-type-btn { border: 1px solid #ddd; background: white; border-radius: 4px; padding: 4px 8px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+  .layout-type-btn.active { background: #6200EE; color: white; border-color: #6200EE; }
+  .layout-types { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 10px; }
+  .tip { background: #E8EAF6; border-radius: 4px; padding: 6px 10px; font-size: 11px; color: #3F51B5; margin-top: 8px; }
+</style>
+</head>
+<body>
+<h3>📐 レイアウト</h3>
+<div class="layout-types">
+  <button class="layout-type-btn active">LinearLayout</button>
+  <button class="layout-type-btn">FrameLayout</button>
+  <button class="layout-type-btn">GridLayout</button>
+  <button class="layout-type-btn">RelativeLayout</button>
+  <button class="layout-type-btn">ConstraintLayout</button>
+</div>
+
+<div class="preview" id="layoutPreview">
+  ⬛ LinearLayout (vertical)
+</div>
+
+<div class="prop-group">
+  <label>Orientation</label>
+  <select id="orientationSelect">
+    <option>vertical</option>
+    <option>horizontal</option>
+  </select>
+</div>
+<div class="prop-group">
+  <label>Gravity</label>
+  <select>
+    <option>start|top</option>
+    <option>center</option>
+    <option>center_horizontal</option>
+    <option>center_vertical</option>
+    <option>end|bottom</option>
+  </select>
+</div>
+<div class="prop-group">
+  <label>Width</label>
+  <select>
+    <option>match_parent</option>
+    <option>wrap_content</option>
+  </select>
+</div>
+<div class="prop-group">
+  <label>Height</label>
+  <select>
+    <option>wrap_content</option>
+    <option>match_parent</option>
+  </select>
+</div>
+<div class="prop-group">
+  <label>Padding</label>
+  <input type="text" value="8dp">
+</div>
+<div class="prop-group">
+  <label>Background Color</label>
+  <input type="color" value="#ffffff">
+</div>
+
+<div class="tip">💡 コンポーネントを子要素として追加するには、このレイアウトをキャンバスに追加してから、その中にドロップしてください。</div>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>EditText Properties</title>
+<style>
+  body { font-family: Roboto, sans-serif; font-size: 13px; margin: 0; padding: 8px; }
+  .prop-group { margin-bottom: 10px; }
+  label { display: block; font-size: 11px; font-weight: 600; color: #5f6368; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  input, select { width: 100%; padding: 6px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; box-sizing: border-box; }
+  input:focus, select:focus { outline: none; border-color: #6200EE; }
+  .preview { border: 1px solid #ddd; border-radius: 8px; padding: 12px; background: #fafafa; margin-bottom: 12px; }
+  .preview-input { width: 100%; padding: 8px 12px; border: none; border-bottom: 2px solid #6200EE; font-size: 16px; background: transparent; box-sizing: border-box; }
+  h3 { font-size: 14px; margin: 0 0 10px; color: #202124; }
+</style>
+</head>
+<body>
+<h3>✏️ EditText</h3>
+<div class="preview">
+  <input type="text" class="preview-input" placeholder="ヒントテキスト" readonly>
+</div>
+<div class="prop-group">
+  <label>Hint Text</label>
+  <input type="text" placeholder="例: メールアドレスを入力">
+</div>
+<div class="prop-group">
+  <label>Default Text</label>
+  <input type="text" placeholder="初期値">
+</div>
+<div class="prop-group">
+  <label>Input Type</label>
+  <select>
+    <option value="text">text</option>
+    <option value="textMultiLine">textMultiLine</option>
+    <option value="textPassword">textPassword</option>
+    <option value="textEmailAddress">textEmailAddress</option>
+    <option value="phone">phone</option>
+    <option value="number">number</option>
+    <option value="numberDecimal">numberDecimal</option>
+    <option value="textUri">textUri</option>
+  </select>
+</div>
+<div class="prop-group">
+  <label>Max Lines</label>
+  <input type="number" value="1" min="1">
+</div>
+<div class="prop-group">
+  <label>IME Options</label>
+  <select>
+    <option>actionDone</option>
+    <option>actionNext</option>
+    <option>actionSearch</option>
+    <option>actionSend</option>
+    <option>actionGo</option>
+  </select>
+</div>
+<div class="prop-group">
+  <label>Text Size</label>
+  <input type="text" value="16sp">
+</div>
+</body>
+</html>
