@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<!--
+  Phase 4 Extended: Stripe PaymentForm Properties Panel
+  Used as reference content for the Stripe settings modal in index.html.
+-->
+
+<!-- Security notice -->
+<div class="api-security-notice" style="background:#fff8e1;border-color:#f9a825;">
+  🔒 <strong>セキュリティ重要事項</strong><br>
+  <strong>シークレットキーはサーバー側のみで使用</strong>してください。
+  Androidアプリには<strong>公開キー（Publishable Key）のみ</strong>を組み込みます。<br>
+  <a href="https://stripe.com/docs/keys" target="_blank" rel="noopener">Stripeキー管理について →</a>
+</div>
+
+<!-- Publishable Key -->
+<div class="maps-props-section">
+  <div class="maps-props-section-title">公開キー (Publishable Key)</div>
+  <div class="api-key-group">
+    <input type="password" id="stripePubKeyInput" class="api-key-input"
+           placeholder="pk_test_..." autocomplete="off" spellcheck="false">
+    <button class="api-key-toggle-btn" id="stripePubKeyToggle" title="表示/非表示">👁</button>
+  </div>
+  <div class="api-key-status" id="stripePubKeyStatus"></div>
+</div>
+
+<!-- Payment settings -->
+<div class="maps-props-section">
+  <div class="maps-props-section-title">決済設定</div>
+  <div class="maps-props-row">
+    <span class="maps-props-label">通貨</span>
+    <select class="maps-props-input" id="stripeCurrencySelect">
+      <option value="JPY">JPY (日本円)</option>
+      <option value="USD">USD (米ドル)</option>
+      <option value="EUR">EUR (ユーロ)</option>
+      <option value="GBP">GBP (英ポンド)</option>
+      <option value="AUD">AUD (豪ドル)</option>
+      <option value="CAD">CAD (カナダドル)</option>
+    </select>
+  </div>
+  <div class="maps-props-row">
+    <span class="maps-props-label">金額</span>
+    <input type="number" class="maps-props-input" id="stripeAmountInput"
+           value="1000" min="0" step="100" style="width:120px;">
+  </div>
+  <div class="maps-props-row">
+    <span class="maps-props-label">説明</span>
+    <input type="text" class="maps-props-input" id="stripeDescInput"
+           placeholder="商品の購入" value="商品の購入" style="flex:1;">
+  </div>
+  <div class="maps-props-row">
+    <span class="maps-props-label">ボタンテキスト</span>
+    <input type="text" class="maps-props-input" id="stripeButtonInput"
+           value="Pay" style="flex:1;">
+  </div>
+</div>
+
+<!-- Test cards -->
+<div class="maps-props-section">
+  <div class="maps-props-section-title">🧪 テスト用カード番号</div>
+  <div style="font-size:11px;color:var(--on-surface-secondary);">
+    <div style="font-family:var(--font-mono);background:var(--surface-variant);border-radius:4px;padding:8px;line-height:1.8;">
+      <div><strong>成功:</strong> 4242 4242 4242 4242</div>
+      <div><strong>3Dセキュア:</strong> 4000 0025 0000 3155</div>
+      <div><strong>残高不足:</strong> 4000 0000 0000 9995</div>
+      <div><strong>有効期限:</strong> 任意の未来日 (例: 12/34)</div>
+      <div><strong>CVV:</strong> 任意の3桁</div>
+    </div>
+    <div style="margin-top:6px;">
+      <a href="https://stripe.com/docs/testing" target="_blank" rel="noopener" style="color:var(--primary);font-size:11px;">
+        全テストカード一覧 →
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Steps guide -->
+<div class="maps-props-section">
+  <div class="maps-props-section-title">セットアップ手順</div>
+  <ol class="api-steps-list">
+    <li>
+      <span class="api-step-num">1</span>
+      <span class="api-step-text">
+        <a href="https://dashboard.stripe.com/register" target="_blank" rel="noopener">Stripeダッシュボード</a>
+        でアカウントを作成
+      </span>
+    </li>
+    <li>
+      <span class="api-step-num">2</span>
+      <span class="api-step-text">「開発者」→「APIキー」から <strong>公開可能キー (pk_test_...)</strong> をコピー</span>
+    </li>
+    <li>
+      <span class="api-step-num">3</span>
+      <span class="api-step-text">上のフィールドに貼り付けて「保存」</span>
+    </li>
+    <li>
+      <span class="api-step-num">4</span>
+      <span class="api-step-text"><strong>シークレットキー (sk_...)はサーバー側のみで使用</strong>（アプリには絶対に含めない）</span>
+    </li>
+  </ol>
+</div>

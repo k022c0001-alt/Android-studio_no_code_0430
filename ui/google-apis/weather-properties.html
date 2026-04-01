@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<!--
+  Phase 4 Extended: WeatherView Properties Panel
+  Used as reference content for the weather properties modal in index.html.
+-->
+
+<!-- City search -->
+<div class="maps-props-section">
+  <div class="maps-props-section-title">都市設定</div>
+  <div class="maps-props-row">
+    <span class="maps-props-label">都市名</span>
+    <input type="text" class="maps-props-input" id="weatherCityInput"
+           placeholder="Tokyo, Osaka, New York..." value="Tokyo">
+  </div>
+  <div class="api-key-status" id="weatherCityStatus" style="font-size:10px;color:var(--on-surface-secondary);margin-top:4px;">
+    例: Tokyo / 東京 / Osaka / New York
+  </div>
+</div>
+
+<!-- API Key -->
+<div class="maps-props-section">
+  <div class="maps-props-section-title">OpenWeatherMap APIキー</div>
+  <div class="api-key-group">
+    <input type="password" id="weatherApiKeyInput" class="api-key-input"
+           placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false">
+    <button class="api-key-toggle-btn" id="weatherApiKeyToggle" title="表示/非表示">👁</button>
+  </div>
+  <div class="api-key-status" id="weatherApiKeyStatus"></div>
+</div>
+
+<!-- Units and language -->
+<div class="maps-props-section">
+  <div class="maps-props-section-title">表示設定</div>
+  <div class="maps-props-row">
+    <span class="maps-props-label">温度単位</span>
+    <select class="maps-props-input" id="weatherUnitsSelect">
+      <option value="metric">℃ (metric)</option>
+      <option value="imperial">℉ (imperial)</option>
+      <option value="standard">K (Kelvin)</option>
+    </select>
+  </div>
+  <div class="maps-props-row">
+    <span class="maps-props-label">言語</span>
+    <select class="maps-props-input" id="weatherLangSelect">
+      <option value="ja">日本語</option>
+      <option value="en">English</option>
+      <option value="zh_cn">中文</option>
+      <option value="ko">한국어</option>
+      <option value="de">Deutsch</option>
+      <option value="fr">Français</option>
+    </select>
+  </div>
+  <div class="maps-props-row">
+    <span class="maps-props-label">5日間予報</span>
+    <label class="maps-props-toggle">
+      <input type="checkbox" id="weatherForecastToggle">
+      <span class="toggle-slider"></span>
+    </label>
+  </div>
+  <div class="maps-props-row">
+    <span class="maps-props-label">自動更新 (分)</span>
+    <input type="number" class="maps-props-input" id="weatherRefreshInput"
+           value="0" min="0" max="60" step="5" style="width:80px;">
+    <span style="font-size:10px;color:var(--on-surface-secondary);margin-left:4px;">0=無効</span>
+  </div>
+</div>
+
+<!-- Templates -->
+<div class="maps-props-section">
+  <div class="maps-props-section-title">テンプレート</div>
+  <div class="maps-template-grid">
+    <div class="maps-template-card" data-weather-template="simple">
+      <div class="template-icon">🌤️</div>
+      <div class="template-name">シンプル天気</div>
+      <div class="template-desc">現在の天気のみ</div>
+    </div>
+    <div class="maps-template-card" data-weather-template="forecast">
+      <div class="template-icon">📅</div>
+      <div class="template-name">5日間予報</div>
+      <div class="template-desc">週間天気表示</div>
+    </div>
+    <div class="maps-template-card" data-weather-template="multicity">
+      <div class="template-icon">🌍</div>
+      <div class="template-name">複数都市比較</div>
+      <div class="template-desc">3都市の天気</div>
+    </div>
+  </div>
+</div>
+
+<!-- Guide link -->
+<div class="maps-props-section">
+  <div class="api-key-status" style="background:var(--surface-variant);border-radius:4px;padding:8px;font-size:11px;">
+    📖 APIキーの取得方法:
+    <a href="https://openweathermap.org/api" target="_blank" rel="noopener" style="color:var(--primary);">
+      openweathermap.org/api
+    </a>
+    で無料アカウントを作成してください。
+  </div>
+</div>
