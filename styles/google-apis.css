@@ -373,3 +373,98 @@
   color: #1b5e20;
   margin-bottom: 8px;
 }
+
+/* =========================================================
+   Phase 4 Extended: Weather / Payment / eCommerce styles
+   ========================================================= */
+
+/* ---- Category tabs for new API categories ---- */
+.category-tab[data-category="weather"]::after,
+.category-tab[data-category="payment"]::after,
+.category-tab[data-category="ecommerce"]::after {
+  content: "NEW";
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--primary, #6750A4);
+  color: #fff;
+  font-size: 7px;
+  font-weight: 700;
+  padding: 1px 3px;
+  border-radius: 3px;
+  letter-spacing: 0.04em;
+}
+.category-tab[data-category="weather"],
+.category-tab[data-category="payment"],
+.category-tab[data-category="ecommerce"] {
+  position: relative;
+}
+
+/* ---- Toggle switch (used in weather properties) ---- */
+.maps-props-toggle {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+  cursor: pointer;
+}
+.maps-props-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: #ccc;
+  border-radius: 20px;
+  transition: background 0.2s;
+}
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+.maps-props-toggle input:checked + .toggle-slider {
+  background: var(--primary, #6750A4);
+}
+.maps-props-toggle input:checked + .toggle-slider::before {
+  transform: translateX(16px);
+}
+
+/* ---- External API modal tab bar ---- */
+.ext-api-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--divider, #e0e0e0);
+  margin-bottom: 16px;
+  gap: 2px;
+}
+.ext-api-tab {
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  color: var(--on-surface-secondary, #49454f);
+  transition: color 0.15s, border-color 0.15s;
+}
+.ext-api-tab.active {
+  color: var(--primary, #6750A4);
+  border-bottom-color: var(--primary, #6750A4);
+}
+.ext-api-tab:hover:not(.active) {
+  color: var(--on-surface, #1c1b1f);
+  background: var(--surface-variant, #f5f5f5);
+  border-radius: 4px 4px 0 0;
+}
+.ext-api-panel { display: none; }
+.ext-api-panel.active { display: block; }

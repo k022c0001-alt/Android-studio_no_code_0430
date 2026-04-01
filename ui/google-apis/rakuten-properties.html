@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<!--
+  Phase 4 Extended: Rakuten ProductSearch Properties Panel
+  Used as reference content for the Rakuten settings modal in index.html.
+-->
+
+<!-- API Key -->
+<div class="maps-props-section">
+  <div class="maps-props-section-title">楽天アプリケーションID</div>
+  <div class="api-key-group">
+    <input type="password" id="rakutenApiKeyInput" class="api-key-input"
+           placeholder="xxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false">
+    <button class="api-key-toggle-btn" id="rakutenApiKeyToggle" title="表示/非表示">👁</button>
+  </div>
+  <div class="api-key-status" id="rakutenApiKeyStatus"></div>
+</div>
+
+<!-- Affiliate ID -->
+<div class="maps-props-section">
+  <div class="maps-props-section-title">アフィリエイトID (任意)</div>
+  <div class="api-key-group">
+    <input type="text" id="rakutenAffiliateInput" class="api-key-input"
+           placeholder="xxxxxxxx.xxxxxxxx.xxxxxxxx.xxxxxxxx" autocomplete="off">
+  </div>
+  <div style="font-size:10px;color:var(--on-surface-secondary);margin-top:4px;">
+    楽天アフィリエイトに登録するとリンク経由の購入で報酬が発生します
+  </div>
+</div>
+
+<!-- Search settings -->
+<div class="maps-props-section">
+  <div class="maps-props-section-title">検索設定</div>
+  <div class="maps-props-row">
+    <span class="maps-props-label">デフォルトキーワード</span>
+    <input type="text" class="maps-props-input" id="rakutenKeywordInput"
+           placeholder="例: スマートウォッチ" style="flex:1;">
+  </div>
+  <div class="maps-props-row">
+    <span class="maps-props-label">並び替え</span>
+    <select class="maps-props-input" id="rakutenSortSelect">
+      <option value="+itemPrice">価格昇順</option>
+      <option value="-itemPrice">価格降順</option>
+      <option value="-reviewCount">口コミ件数</option>
+      <option value="-reviewAverage">評価順</option>
+      <option value="-updateTimestamp">新着順</option>
+    </select>
+  </div>
+  <div class="maps-props-row">
+    <span class="maps-props-label">表示件数</span>
+    <input type="number" class="maps-props-input" id="rakutenHitsInput"
+           value="30" min="1" max="30" style="width:80px;">
+    <span style="font-size:10px;color:var(--on-surface-secondary);margin-left:4px;">最大30件</span>
+  </div>
+  <div class="maps-props-row">
+    <span class="maps-props-label">最低価格 (円)</span>
+    <input type="number" class="maps-props-input" id="rakutenMinPriceInput"
+           value="0" min="0" step="100" style="width:100px;">
+    <span style="font-size:10px;color:var(--on-surface-secondary);margin-left:4px;">0=指定なし</span>
+  </div>
+  <div class="maps-props-row">
+    <span class="maps-props-label">最高価格 (円)</span>
+    <input type="number" class="maps-props-input" id="rakutenMaxPriceInput"
+           value="0" min="0" step="100" style="width:100px;">
+    <span style="font-size:10px;color:var(--on-surface-secondary);margin-left:4px;">0=指定なし</span>
+  </div>
+</div>
+
+<!-- Templates -->
+<div class="maps-props-section">
+  <div class="maps-props-section-title">テンプレート</div>
+  <div class="maps-template-grid">
+    <div class="maps-template-card" data-rakuten-template="search">
+      <div class="template-icon">🔍</div>
+      <div class="template-name">商品検索</div>
+      <div class="template-desc">基本検索アプリ</div>
+    </div>
+    <div class="maps-template-card" data-rakuten-template="compare">
+      <div class="template-icon">⚖️</div>
+      <div class="template-name">価格比較</div>
+      <div class="template-desc">価格昇順表示</div>
+    </div>
+    <div class="maps-template-card" data-rakuten-template="ranking">
+      <div class="template-icon">🏆</div>
+      <div class="template-name">評価ランキング</div>
+      <div class="template-desc">高評価順</div>
+    </div>
+  </div>
+</div>
+
+<!-- Steps guide -->
+<div class="maps-props-section">
+  <div class="maps-props-section-title">セットアップ手順</div>
+  <ol class="api-steps-list">
+    <li>
+      <span class="api-step-num">1</span>
+      <span class="api-step-text">
+        <a href="https://webservice.rakuten.co.jp/" target="_blank" rel="noopener">楽天ウェブサービス</a>
+        でアプリを登録
+      </span>
+    </li>
+    <li>
+      <span class="api-step-num">2</span>
+      <span class="api-step-text">発行された <strong>アプリケーションID</strong> をコピー</span>
+    </li>
+    <li>
+      <span class="api-step-num">3</span>
+      <span class="api-step-text">上のフィールドに貼り付けて「保存」</span>
+    </li>
+    <li>
+      <span class="api-step-num">4</span>
+      <span class="api-step-text">（任意）楽天アフィリエイトのIDを設定するとリンク報酬が受け取れます</span>
+    </li>
+  </ol>
+</div>

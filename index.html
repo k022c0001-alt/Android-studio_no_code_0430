@@ -78,6 +78,9 @@
         <button class="category-tab" data-category="material">Material</button>
         <button class="category-tab" data-category="navigation">ナビ</button>
         <button class="category-tab" data-category="google">Google</button>
+        <button class="category-tab" data-category="weather">Weather</button>
+        <button class="category-tab" data-category="payment">Payment</button>
+        <button class="category-tab" data-category="ecommerce">eCommerce</button>
         <button class="category-tab" data-category="favorites">★</button>
         <button class="category-tab" data-category="recent">最近</button>
       </div>
@@ -262,62 +265,171 @@
 
 <!-- ===== Google API Settings Modal ===== -->
 <div class="modal-overlay" id="googleApiModal">
-  <div class="modal" style="max-width:520px;">
-    <div class="modal-title">🔑 Google API 設定</div>
+  <div class="modal" style="max-width:560px;">
+    <div class="modal-title">🔑 API 設定</div>
 
-    <div class="google-modal-header">
-      <div class="google-modal-logo">🔑</div>
-      <div class="google-modal-title-block">
-        <h2>Google Maps API キー</h2>
-        <p>MapView コンポーネントの地図表示に使用します</p>
+    <!-- Tab bar: Google Maps / 外部API -->
+    <div class="ext-api-tabs" id="apiModalTabs">
+      <button class="ext-api-tab active" data-api-tab="maps">🗺️ Google Maps</button>
+      <button class="ext-api-tab" data-api-tab="weather">🌤️ OpenWeatherMap</button>
+      <button class="ext-api-tab" data-api-tab="stripe">💳 Stripe</button>
+      <button class="ext-api-tab" data-api-tab="rakuten">🛒 楽天</button>
+    </div>
+
+    <!-- ---- Google Maps panel ---- -->
+    <div class="ext-api-panel active" id="apiPanel-maps">
+      <div class="google-modal-header">
+        <div class="google-modal-logo">🗺️</div>
+        <div class="google-modal-title-block">
+          <h2>Google Maps API キー</h2>
+          <p>MapView コンポーネントの地図表示に使用します</p>
+        </div>
+      </div>
+      <div class="api-security-notice">
+        ⚠️ APIキーはローカルストレージに難読化保存されます。本番環境では
+        <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener">
+          Google Cloud Console
+        </a>
+        でキーに制限を設定してください。
+      </div>
+      <div class="maps-props-section">
+        <div class="maps-props-section-title">Maps API キー</div>
+        <div class="api-key-group">
+          <input type="password" id="gApiKeyInput" class="api-key-input"
+                 placeholder="AIzaSy..." autocomplete="off" spellcheck="false">
+          <button class="api-key-toggle-btn" id="gApiKeyToggle" title="表示/非表示">👁</button>
+        </div>
+        <div class="api-key-status" id="gApiKeyStatus"></div>
+      </div>
+      <div class="maps-props-section">
+        <div class="maps-props-section-title">キー取得手順</div>
+        <ol class="api-steps-list">
+          <li><span class="api-step-num">1</span><span class="api-step-text"><a href="https://console.cloud.google.com/" target="_blank" rel="noopener">Google Cloud Console</a> でプロジェクトを作成または選択</span></li>
+          <li><span class="api-step-num">2</span><span class="api-step-text">「APIとサービス」→「ライブラリ」から <strong>Maps SDK for Android</strong> を有効化</span></li>
+          <li><span class="api-step-num">3</span><span class="api-step-text">「認証情報」→「認証情報を作成」→「APIキー」をクリック</span></li>
+          <li><span class="api-step-num">4</span><span class="api-step-text">作成されたキーを上のフィールドに貼り付けて「保存」</span></li>
+          <li><span class="api-step-num">5</span><span class="api-step-text">「キーを制限」でAndroidアプリのパッケージ名・SHA-1を設定（推奨）</span></li>
+        </ol>
       </div>
     </div>
 
-    <div class="api-security-notice">
-      ⚠️ APIキーはローカルストレージに難読化保存されます。本番環境では
-      <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener">
-        Google Cloud Console
-      </a>
-      でキーに制限を設定してください。
-    </div>
-
-    <div class="maps-props-section">
-      <div class="maps-props-section-title">Maps API キー</div>
-      <div class="api-key-group">
-        <input type="password" id="gApiKeyInput" class="api-key-input"
-               placeholder="AIzaSy..." autocomplete="off" spellcheck="false">
-        <button class="api-key-toggle-btn" id="gApiKeyToggle" title="表示/非表示">👁</button>
+    <!-- ---- OpenWeatherMap panel ---- -->
+    <div class="ext-api-panel" id="apiPanel-weather">
+      <div class="google-modal-header">
+        <div class="google-modal-logo">🌤️</div>
+        <div class="google-modal-title-block">
+          <h2>OpenWeatherMap APIキー</h2>
+          <p>WeatherView コンポーネントの天気データ取得に使用します</p>
+        </div>
       </div>
-      <div class="api-key-status" id="gApiKeyStatus"></div>
+      <div class="api-security-notice">
+        ⚠️ APIキーはローカルストレージに難読化保存されます。
+        <a href="https://openweathermap.org/api" target="_blank" rel="noopener">openweathermap.org</a>
+        で無料アカウントを作成してキーを取得してください。
+      </div>
+      <div class="maps-props-section">
+        <div class="maps-props-section-title">OpenWeatherMap APIキー</div>
+        <div class="api-key-group">
+          <input type="password" id="weatherApiKeyInput" class="api-key-input"
+                 placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false">
+          <button class="api-key-toggle-btn" id="weatherApiKeyToggle" title="表示/非表示">👁</button>
+        </div>
+        <div class="api-key-status" id="weatherApiKeyStatus"></div>
+      </div>
+      <div class="maps-props-section">
+        <div class="maps-props-section-title">キー取得手順</div>
+        <ol class="api-steps-list">
+          <li><span class="api-step-num">1</span><span class="api-step-text"><a href="https://openweathermap.org/api" target="_blank" rel="noopener">openweathermap.org/api</a> で無料アカウントを作成</span></li>
+          <li><span class="api-step-num">2</span><span class="api-step-text">ログイン後、右上ユーザー名 →「My API keys」をクリック</span></li>
+          <li><span class="api-step-num">3</span><span class="api-step-text">デフォルトキーをコピー（または「Generate」で新規作成）</span></li>
+          <li><span class="api-step-num">4</span><span class="api-step-text">上のフィールドに貼り付けて「保存」（有効化まで最大10分かかります）</span></li>
+        </ol>
+      </div>
     </div>
 
-    <div class="maps-props-section">
-      <div class="maps-props-section-title">キー取得手順</div>
-      <ol class="api-steps-list">
-        <li>
-          <span class="api-step-num">1</span>
-          <span class="api-step-text">
-            <a href="https://console.cloud.google.com/" target="_blank" rel="noopener">Google Cloud Console</a>
-            でプロジェクトを作成または選択
-          </span>
-        </li>
-        <li>
-          <span class="api-step-num">2</span>
-          <span class="api-step-text">「APIとサービス」→「ライブラリ」から <strong>Maps SDK for Android</strong> を有効化</span>
-        </li>
-        <li>
-          <span class="api-step-num">3</span>
-          <span class="api-step-text">「認証情報」→「認証情報を作成」→「APIキー」をクリック</span>
-        </li>
-        <li>
-          <span class="api-step-num">4</span>
-          <span class="api-step-text">作成されたキーを上のフィールドに貼り付けて「保存」</span>
-        </li>
-        <li>
-          <span class="api-step-num">5</span>
-          <span class="api-step-text">「キーを制限」でAndroidアプリのパッケージ名・SHA-1を設定（推奨）</span>
-        </li>
-      </ol>
+    <!-- ---- Stripe panel ---- -->
+    <div class="ext-api-panel" id="apiPanel-stripe">
+      <div class="google-modal-header">
+        <div class="google-modal-logo">💳</div>
+        <div class="google-modal-title-block">
+          <h2>Stripe 公開キー</h2>
+          <p>PaymentForm コンポーネントの決済処理に使用します</p>
+        </div>
+      </div>
+      <div class="api-security-notice" style="background:#fff8e1;border-color:#f9a825;">
+        🔒 <strong>シークレットキー (sk_...) はサーバー側のみで使用。</strong>
+        Androidアプリには <strong>公開キー (pk_...) のみ</strong> を組み込んでください。<br>
+        <a href="https://stripe.com/docs/keys" target="_blank" rel="noopener">Stripeキー管理について →</a>
+      </div>
+      <div class="maps-props-section">
+        <div class="maps-props-section-title">公開キー (Publishable Key)</div>
+        <div class="api-key-group">
+          <input type="password" id="stripePubKeyInput" class="api-key-input"
+                 placeholder="pk_test_..." autocomplete="off" spellcheck="false">
+          <button class="api-key-toggle-btn" id="stripePubKeyToggle" title="表示/非表示">👁</button>
+        </div>
+        <div class="api-key-status" id="stripePubKeyStatus"></div>
+      </div>
+      <div class="maps-props-section">
+        <div class="maps-props-section-title">🧪 テスト用カード番号</div>
+        <div style="font-family:var(--font-mono);font-size:11px;background:var(--surface-variant);border-radius:4px;padding:8px;line-height:1.8;color:var(--on-surface);">
+          <div><strong>成功:</strong> 4242 4242 4242 4242</div>
+          <div><strong>3Dセキュア:</strong> 4000 0025 0000 3155</div>
+          <div><strong>残高不足:</strong> 4000 0000 0000 9995</div>
+          <div style="color:var(--on-surface-secondary);font-size:10px;">有効期限: 任意の未来日 / CVV: 任意の3桁</div>
+        </div>
+      </div>
+      <div class="maps-props-section">
+        <div class="maps-props-section-title">セットアップ手順</div>
+        <ol class="api-steps-list">
+          <li><span class="api-step-num">1</span><span class="api-step-text"><a href="https://dashboard.stripe.com/register" target="_blank" rel="noopener">Stripeダッシュボード</a> でアカウント作成</span></li>
+          <li><span class="api-step-num">2</span><span class="api-step-text">「開発者」→「APIキー」から <strong>公開可能キー (pk_test_...)</strong> をコピー</span></li>
+          <li><span class="api-step-num">3</span><span class="api-step-text">上のフィールドに貼り付けて「保存」</span></li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- ---- Rakuten panel ---- -->
+    <div class="ext-api-panel" id="apiPanel-rakuten">
+      <div class="google-modal-header">
+        <div class="google-modal-logo">🛒</div>
+        <div class="google-modal-title-block">
+          <h2>楽天アプリケーションID</h2>
+          <p>ProductSearch コンポーネントの商品検索に使用します</p>
+        </div>
+      </div>
+      <div class="api-security-notice">
+        ⚠️ APIキーはローカルストレージに難読化保存されます。
+        <a href="https://webservice.rakuten.co.jp/" target="_blank" rel="noopener">楽天ウェブサービス</a>
+        でアプリ登録してIDを取得してください。
+      </div>
+      <div class="maps-props-section">
+        <div class="maps-props-section-title">アプリケーションID</div>
+        <div class="api-key-group">
+          <input type="password" id="rakutenApiKeyInput" class="api-key-input"
+                 placeholder="xxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false">
+          <button class="api-key-toggle-btn" id="rakutenApiKeyToggle" title="表示/非表示">👁</button>
+        </div>
+        <div class="api-key-status" id="rakutenApiKeyStatus"></div>
+      </div>
+      <div class="maps-props-section">
+        <div class="maps-props-section-title">アフィリエイトID (任意)</div>
+        <div class="api-key-group">
+          <input type="text" id="rakutenAffiliateInput" class="api-key-input"
+                 placeholder="xxxxxxxx.xxxxxxxx.xxxxxxxx.xxxxxxxx" autocomplete="off">
+        </div>
+        <div style="font-size:10px;color:var(--on-surface-secondary);margin-bottom:8px;">
+          楽天アフィリエイトに登録するとリンク経由の購入で報酬が発生します
+        </div>
+      </div>
+      <div class="maps-props-section">
+        <div class="maps-props-section-title">セットアップ手順</div>
+        <ol class="api-steps-list">
+          <li><span class="api-step-num">1</span><span class="api-step-text"><a href="https://webservice.rakuten.co.jp/" target="_blank" rel="noopener">楽天ウェブサービス</a> でアプリを登録</span></li>
+          <li><span class="api-step-num">2</span><span class="api-step-text">発行された <strong>アプリケーションID</strong> をコピー</span></li>
+          <li><span class="api-step-num">3</span><span class="api-step-text">上のフィールドに貼り付けて「保存」</span></li>
+        </ol>
+      </div>
     </div>
 
     <div class="modal-actions">
@@ -387,6 +499,14 @@
 <script src="scripts/google-apis/markers.js"></script>
 <script src="scripts/google-apis/google-maps-codegen.js"></script>
 <script src="scripts/google-apis/maps.js"></script>
+
+<!-- Phase 4 Extended: Weather, Payment, eCommerce APIs -->
+<script src="scripts/google-apis/weather-codegen.js"></script>
+<script src="scripts/google-apis/weather.js"></script>
+<script src="scripts/google-apis/stripe-codegen.js"></script>
+<script src="scripts/google-apis/stripe.js"></script>
+<script src="scripts/google-apis/rakuten-codegen.js"></script>
+<script src="scripts/google-apis/rakuten.js"></script>
 
 <!-- Editor core (must be last) -->
 <script src="scripts/editor.js"></script>
@@ -478,16 +598,25 @@ function updateDepsPanel() {
     }
   }
 
-  const hasMapView = editor._components.some(c => c.type === 'MapView');
-  const project = typeof projectManager !== 'undefined' ? projectManager.getCurrentProject() : null;
-  const packageName = project ? project.packageName : 'com.example.myapp';
-  const appName     = project ? project.appName     : 'MyApp';
+  const hasMapView     = editor._components.some(c => c.type === 'MapView');
+  const hasWeather     = editor._components.some(c => c.type === 'WeatherView');
+  const hasPayment     = editor._components.some(c => c.type === 'PaymentForm');
+  const hasProduct     = editor._components.some(c => c.type === 'ProductSearch');
+  const project        = typeof projectManager !== 'undefined' ? projectManager.getCurrentProject() : null;
+  const packageName    = project ? project.packageName : 'com.example.myapp';
+  const appName        = project ? project.appName     : 'MyApp';
 
-  // Update build.gradle
+  // Update build.gradle – prefer most specific generator
   const gradleOut = document.getElementById('gradleOutput');
   if (gradleOut) {
     if (hasMapView && typeof GoogleMapsCodegen !== 'undefined') {
       gradleOut.textContent = GoogleMapsCodegen.generateGradleContent({ appId: packageName });
+    } else if (hasWeather && typeof WeatherCodegen !== 'undefined') {
+      gradleOut.textContent = WeatherCodegen.generateGradleContent({ appId: packageName });
+    } else if (hasPayment && typeof StripeCodegen !== 'undefined') {
+      gradleOut.textContent = StripeCodegen.generateGradleContent({ appId: packageName });
+    } else if (hasProduct && typeof RakutenCodegen !== 'undefined') {
+      gradleOut.textContent = RakutenCodegen.generateGradleContent({ appId: packageName });
     } else if (typeof MATERIAL_DESIGN !== 'undefined') {
       gradleOut.textContent = MATERIAL_DESIGN.generateGradleDependencies(deps);
     }
@@ -506,6 +635,9 @@ function updateDepsPanel() {
         apiKey,
         needsLocation: editor._components.some(c => c.type === 'MapView' && c.props && c.props.showMyLocation),
       });
+    } else if ((hasWeather || hasPayment || hasProduct) && typeof MATERIAL_DESIGN !== 'undefined') {
+      // Internet permission is needed for external API components
+      manifestOut.textContent = MATERIAL_DESIGN.generateManifestXml({ packageName, appName });
     } else if (typeof MATERIAL_DESIGN !== 'undefined') {
       manifestOut.textContent = MATERIAL_DESIGN.generateManifestXml({ packageName, appName });
     }
@@ -594,78 +726,136 @@ function downloadFile(filename, content, mimeType) {
   URL.revokeObjectURL(url);
 }
 
-// ---- Google API Modal ----
+// ---- Google API Modal (with tabs for Maps / Weather / Stripe / Rakuten) ----
 function setupGoogleApiModal() {
-  const openBtn   = document.getElementById('btnGoogleApiSettings');
-  const modal     = document.getElementById('googleApiModal');
-  const closeBtn  = document.getElementById('btnGoogleApiClose');
-  const saveBtn   = document.getElementById('btnGoogleApiSave');
-  const keyInput  = document.getElementById('gApiKeyInput');
-  const keyToggle = document.getElementById('gApiKeyToggle');
-  const keyStatus = document.getElementById('gApiKeyStatus');
+  const openBtn = document.getElementById('btnGoogleApiSettings');
+  const modal   = document.getElementById('googleApiModal');
+  const closeBtn = document.getElementById('btnGoogleApiClose');
+  const saveBtn  = document.getElementById('btnGoogleApiSave');
 
   if (!openBtn || !modal) return;
 
-  // Pre-fill saved key
-  if (keyInput && typeof GoogleApiManager !== 'undefined') {
-    keyInput.value = GoogleApiManager.getApiKey('maps') || '';
+  // ---- Tab switching ----
+  const apiTabBtns   = modal.querySelectorAll('.ext-api-tab');
+  const apiPanels    = modal.querySelectorAll('.ext-api-panel');
+  let activeApiTab   = 'maps';
+
+  apiTabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      apiTabBtns.forEach(b => b.classList.remove('active'));
+      apiPanels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      const panelId = 'apiPanel-' + btn.dataset.apiTab;
+      const panel = document.getElementById(panelId);
+      if (panel) panel.classList.add('active');
+      activeApiTab = btn.dataset.apiTab || 'maps';
+    });
+  });
+
+  // ---- Helper: setup a key input with toggle + status ----
+  function _setupKeyInput(inputId, toggleId, statusId, validatorFn) {
+    const input  = document.getElementById(inputId);
+    const toggle = document.getElementById(toggleId);
+    const status = document.getElementById(statusId);
+    if (!input) return;
+
+    if (toggle) {
+      toggle.addEventListener('click', () => {
+        input.type = input.type === 'password' ? 'text' : 'password';
+        toggle.textContent = input.type === 'password' ? '👁' : '🙈';
+      });
+    }
+
+    function _update() {
+      if (!status) return;
+      const val = input.value.trim();
+      if (!val) { input.className = 'api-key-input'; status.textContent = ''; return; }
+      const valid = validatorFn ? validatorFn(val) : val.length >= 20;
+      input.className = `api-key-input ${valid ? 'valid' : 'invalid'}`;
+      status.textContent = valid ? '✓ 有効なキー形式です' : '⚠ キー形式を確認してください';
+      status.className = `api-key-status ${valid ? 'ok' : 'error'}`;
+    }
+    input.addEventListener('input', _update);
+    return _update;
   }
 
+  // ---- Maps ----
+  const mapsUpdate = _setupKeyInput('gApiKeyInput', 'gApiKeyToggle', 'gApiKeyStatus',
+    (k) => typeof GoogleApiManager !== 'undefined' ? GoogleApiManager.validateApiKey(k) : k.length >= 20);
+
+  // ---- Weather ----
+  _setupKeyInput('weatherApiKeyInput', 'weatherApiKeyToggle', 'weatherApiKeyStatus',
+    (k) => k.length >= 20 && /^[a-f0-9]+$/.test(k));
+
+  // ---- Stripe ----
+  _setupKeyInput('stripePubKeyInput', 'stripePubKeyToggle', 'stripePubKeyStatus',
+    (k) => k.startsWith('pk_') && k.length >= 20);
+
+  // ---- Rakuten ----
+  _setupKeyInput('rakutenApiKeyInput', 'rakutenApiKeyToggle', 'rakutenApiKeyStatus',
+    (k) => k.length >= 10);
+
+  // ---- Pre-fill saved keys on open ----
   openBtn.addEventListener('click', () => {
-    if (keyInput && typeof GoogleApiManager !== 'undefined') {
-      keyInput.value = GoogleApiManager.getApiKey('maps') || '';
+    if (typeof GoogleApiManager !== 'undefined') {
+      const mapsInput    = document.getElementById('gApiKeyInput');
+      const weatherInput = document.getElementById('weatherApiKeyInput');
+      const stripeInput  = document.getElementById('stripePubKeyInput');
+      const rakutenInput = document.getElementById('rakutenApiKeyInput');
+      const rakutenAff   = document.getElementById('rakutenAffiliateInput');
+      if (mapsInput)    mapsInput.value    = GoogleApiManager.getApiKey('maps')    || '';
+      if (weatherInput) weatherInput.value = GoogleApiManager.getApiKey('weather') || '';
+      if (stripeInput)  stripeInput.value  = GoogleApiManager.getApiKey('stripe')  || '';
+      if (rakutenInput) rakutenInput.value = GoogleApiManager.getApiKey('rakuten') || '';
+      if (rakutenAff)   rakutenAff.value   = GoogleApiManager.getApiKey('rakuten_affiliate') || '';
     }
-    _updateApiKeyStatus();
+    if (mapsUpdate) mapsUpdate();
     modal.style.display = 'flex';
   });
 
   if (closeBtn) closeBtn.addEventListener('click', () => { modal.style.display = 'none'; });
   modal.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
 
-  if (keyToggle && keyInput) {
-    keyToggle.addEventListener('click', () => {
-      keyInput.type = keyInput.type === 'password' ? 'text' : 'password';
-      keyToggle.textContent = keyInput.type === 'password' ? '👁' : '🙈';
-    });
-  }
-
-  if (keyInput) keyInput.addEventListener('input', _updateApiKeyStatus);
-
+  // ---- Save (saves the currently active tab's key) ----
   if (saveBtn) {
     saveBtn.addEventListener('click', () => {
-      const key = keyInput ? keyInput.value.trim() : '';
-      if (typeof GoogleApiManager !== 'undefined') {
-        GoogleApiManager.setApiKey('maps', key);
-        if (key) GoogleApiManager.markApiUsed('Maps SDK for Android');
+      if (typeof GoogleApiManager === 'undefined') return;
+
+      const savedInfo = {
+        maps:    { inputId: 'gApiKeyInput',        service: 'maps',               label: 'Maps SDK for Android' },
+        weather: { inputId: 'weatherApiKeyInput',  service: 'weather',            label: 'OpenWeatherMap' },
+        stripe:  { inputId: 'stripePubKeyInput',   service: 'stripe',             label: 'Stripe' },
+        rakuten: { inputId: 'rakutenApiKeyInput',  service: 'rakuten',            label: '楽天API' },
+      };
+
+      const info = savedInfo[activeApiTab];
+      if (!info) return;
+
+      const input  = document.getElementById(info.inputId);
+      const status = document.getElementById(info.inputId.replace('Input', 'Status').replace('KeyInput', 'KeyStatus'));
+      const key    = input ? input.value.trim() : '';
+
+      GoogleApiManager.setApiKey(info.service, key);
+      if (key) GoogleApiManager.markApiUsed(info.label);
+
+      // Also save rakuten affiliate if on rakuten tab
+      if (activeApiTab === 'rakuten') {
+        const affInput = document.getElementById('rakutenAffiliateInput');
+        if (affInput) GoogleApiManager.setApiKey('rakuten_affiliate', affInput.value.trim());
       }
-      if (keyStatus) {
-        keyStatus.textContent = key ? '✓ 保存しました' : '(キーをクリアしました)';
-        keyStatus.className = 'api-key-status ok';
+
+      if (status) {
+        status.textContent = key ? '✓ 保存しました' : '(キーをクリアしました)';
+        status.className = 'api-key-status ok';
       }
       setTimeout(() => { modal.style.display = 'none'; }, 800);
     });
   }
 
-  function _updateApiKeyStatus() {
-    if (!keyInput || !keyStatus) return;
-    const key = keyInput.value.trim();
-    if (!key) {
-      keyInput.className = 'api-key-input';
-      keyStatus.textContent = '';
-      return;
-    }
-    const valid = typeof GoogleApiManager !== 'undefined'
-      ? GoogleApiManager.validateApiKey(key)
-      : key.length >= 20;
-    keyInput.className = `api-key-input ${valid ? 'valid' : 'invalid'}`;
-    keyStatus.textContent = valid ? '✓ 有効なキー形式です' : '⚠ 無効なキー形式です（"AIzaSy..." で始まる文字列を入力してください）';
-    keyStatus.className = `api-key-status ${valid ? 'ok' : 'error'}`;
-  }
-
   // ---- Marker Editor Modal ----
-  const markerModal   = document.getElementById('markerEditorModal');
-  const markerClose   = document.getElementById('btnMarkerEditorClose');
-  const markerSave    = document.getElementById('btnMarkerEditorSave');
+  const markerModal = document.getElementById('markerEditorModal');
+  const markerClose = document.getElementById('btnMarkerEditorClose');
+  const markerSave  = document.getElementById('btnMarkerEditorSave');
 
   if (markerClose && markerModal) {
     markerClose.addEventListener('click', () => { markerModal.style.display = 'none'; });
@@ -683,12 +873,9 @@ function setupGoogleApiModal() {
       const lat     = parseFloat((document.getElementById('markerLatInput') || {}).value || '35.6762');
       const lng     = parseFloat((document.getElementById('markerLngInput') || {}).value || '139.6503');
 
-      // Find the currently selected MapView component id
       const editingMapId = markerModal.dataset.mapId || '';
       if (editingMapId && typeof markerManager !== 'undefined') {
         markerManager.addMarker(editingMapId, { title, snippet, lat, lng });
-        // The markerManager subscription in editor._renderMapViewExtra handles
-        // refreshing the marker list and code output automatically.
       }
       markerModal.style.display = 'none';
     });
