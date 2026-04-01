@@ -49,6 +49,16 @@ ${inner}
     const useViewBinding = options.useViewBinding !== false;
     const layoutName = options.layoutName || 'activity_main';
 
+    // Check for MapView components – delegate to GoogleMapsCodegen when present
+    const mapComponents = components.filter(c => c.type === 'MapView');
+    if (mapComponents.length > 0 && typeof GoogleMapsCodegen !== 'undefined') {
+      const mapComp = mapComponents[0];
+      const markers = (typeof markerManager !== 'undefined')
+        ? markerManager.getMarkers(mapComp.props && mapComp.props.id || '')
+        : [];
+      return GoogleMapsCodegen.generateKotlinActivity(mapComp, markers, { packageName, activityName });
+    }
+
     // Gather imports
     const imports = new Set([
       'android.os.Bundle',

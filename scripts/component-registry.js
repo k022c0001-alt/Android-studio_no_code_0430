@@ -77,7 +77,8 @@ class ComponentRegistry {
       list:       { id: 'list',       label: 'リスト/スクロール', icon: '📋', order: 3 },
       material:   { id: 'material',   label: 'Material Design',   icon: '💎', order: 4 },
       navigation: { id: 'navigation', label: 'ナビゲーション',     icon: '🧭', order: 5 },
-      other:      { id: 'other',      label: 'その他',             icon: '🔧', order: 6 },
+      google:     { id: 'google',     label: 'Google APIs',        icon: '🗺️', order: 6 },
+      other:      { id: 'other',      label: 'その他',             icon: '🔧', order: 7 },
     };
 
     const result = [];

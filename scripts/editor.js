@@ -326,6 +326,11 @@ class Editor {
       });
       form.appendChild(fieldEl);
     });
+
+    // MapView-specific: show marker management panel
+    if (comp.type === 'MapView') {
+      this._renderMapViewExtra(form, comp);
+    }
   }
 
   _createPropertyField(field, value, onChange) {
@@ -398,8 +403,39 @@ class Editor {
         input.type = 'number';
         input.className = 'prop-input';
         input.value = value !== undefined ? value : '';
+        if (field.min !== undefined) input.min = field.min;
+        if (field.max !== undefined) input.max = field.max;
+        if (field.step !== undefined) input.step = field.step;
         input.addEventListener('change', () => onChange(Number(input.value)));
         break;
+
+      case 'slider': {
+        input = document.createElement('div');
+        input.className = 'prop-slider-row';
+        input.style.display = 'flex';
+        input.style.alignItems = 'center';
+        input.style.gap = '8px';
+        const sliderEl = document.createElement('input');
+        sliderEl.type = 'range';
+        sliderEl.className = 'prop-input';
+        sliderEl.style.flex = '1';
+        sliderEl.min  = field.min  !== undefined ? field.min  : 0;
+        sliderEl.max  = field.max  !== undefined ? field.max  : 100;
+        sliderEl.step = field.step !== undefined ? field.step : 1;
+        sliderEl.value = value !== undefined ? value : sliderEl.min;
+        const sliderVal = document.createElement('span');
+        sliderVal.style.minWidth = '28px';
+        sliderVal.style.textAlign = 'right';
+        sliderVal.style.fontSize = '12px';
+        sliderVal.textContent = sliderEl.value;
+        sliderEl.addEventListener('input', () => {
+          sliderVal.textContent = sliderEl.value;
+          onChange(Number(sliderEl.value));
+        });
+        input.appendChild(sliderEl);
+        input.appendChild(sliderVal);
+        break;
+      }
 
       default: // text, dimension
         input = document.createElement('input');
@@ -424,6 +460,96 @@ class Editor {
       { key: 'padding', label: 'Padding', type: 'dimension' },
       { key: 'margin', label: 'Margin', type: 'dimension' },
     ];
+  }
+
+  // ---- MapView Extra: Marker Management Panel ----
+
+  _renderMapViewExtra(form, comp) {
+    if (typeof markerManager === 'undefined') return;
+    const mapId = comp.props && comp.props.id || '';
+
+    const sep = document.createElement('hr');
+    sep.style.cssText = 'margin:12px 0;border:none;border-top:1px solid var(--divider,#eee);';
+    form.appendChild(sep);
+
+    const title = document.createElement('div');
+    title.className = 'maps-props-section-title';
+    title.textContent = 'マーカー管理';
+    title.style.cssText = 'font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--on-surface-secondary);margin-bottom:8px;';
+    form.appendChild(title);
+
+    const listEl = document.createElement('div');
+    listEl.id = 'mapMarkerList_' + (mapId || 'default');
+    listEl.className = 'marker-list';
+    form.appendChild(listEl);
+
+    const addBtn = document.createElement('button');
+    addBtn.className = 'marker-add-btn';
+    addBtn.textContent = '＋ マーカーを追加';
+    addBtn.addEventListener('click', () => {
+      const modal = document.getElementById('markerEditorModal');
+      if (modal) {
+        modal.dataset.mapId = mapId;
+        document.getElementById('markerEditorModalTitle').textContent = '📍 マーカーを追加';
+        // Reset form
+        ['markerTitleInput','markerSnippetInput'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = '';
+        });
+        const latEl = document.getElementById('markerLatInput');
+        const lngEl = document.getElementById('markerLngInput');
+        // Default to the MapView component's current center position
+        if (latEl) latEl.value = comp.props && comp.props.lat !== undefined ? comp.props.lat : 35.6762;
+        if (lngEl) lngEl.value = comp.props && comp.props.lng !== undefined ? comp.props.lng : 139.6503;
+        modal.style.display = 'flex';
+      }
+    });
+    form.appendChild(addBtn);
+
+    // Subscribe to marker updates
+    if (!this._markerUnsub) this._markerUnsub = {};
+    if (this._markerUnsub[mapId]) this._markerUnsub[mapId]();
+    this._markerUnsub[mapId] = markerManager.subscribe(() => {
+      this._renderMarkerList(listEl, mapId);
+      this._updateCode();
+    });
+
+    this._renderMarkerList(listEl, mapId);
+  }
+
+  _renderMarkerList(listEl, mapId) {
+    if (!listEl || typeof markerManager === 'undefined') return;
+    const markers = markerManager.getMarkers(mapId);
+    if (markers.length === 0) {
+      listEl.innerHTML = '<div style="font-size:12px;color:var(--on-surface-secondary);padding:6px 0;">マーカーはまだ追加されていません</div>';
+      return;
+    }
+    listEl.innerHTML = '';
+    markers.forEach(m => {
+      const item = document.createElement('div');
+      item.className = 'marker-item';
+      item.innerHTML = `
+        <span class="marker-item-icon">📍</span>
+        <div class="marker-item-info">
+          <div class="marker-item-title">${this._escapeHtml(m.title)}</div>
+          <div class="marker-item-coords">${m.lat}, ${m.lng}</div>
+        </div>
+        <div class="marker-item-actions">
+          <button class="marker-item-btn delete" data-id="${m.id}" title="削除">🗑</button>
+        </div>`;
+      item.querySelector('.delete').addEventListener('click', () => {
+        markerManager.removeMarker(mapId, m.id);
+      });
+      listEl.appendChild(item);
+    });
+  }
+
+  _escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
   }
 
   // ---- Code Generation ----

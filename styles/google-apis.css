@@ -1,0 +1,375 @@
+/* =========================================================
+   Phase 4: Google APIs – UI Styles
+   ========================================================= */
+
+/* ---- Category tab for "Google" ---- */
+.category-tab[data-category="google"] {
+  position: relative;
+}
+.category-tab[data-category="google"]::after {
+  content: "NEW";
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--primary, #6750A4);
+  color: #fff;
+  font-size: 7px;
+  font-weight: 700;
+  padding: 1px 3px;
+  border-radius: 3px;
+  letter-spacing: 0.04em;
+}
+
+/* ---- Toolbar button for API settings ---- */
+.toolbar-btn.google-api-btn {
+  background: #4285F4;
+  color: #fff;
+  border-color: #3367D6;
+}
+.toolbar-btn.google-api-btn:hover {
+  background: #3367D6;
+}
+
+/* ---- Google API Modal (shared) ---- */
+.google-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.google-modal-logo {
+  font-size: 28px;
+  line-height: 1;
+}
+.google-modal-title-block h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--on-surface, #1c1b1f);
+}
+.google-modal-title-block p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--on-surface-secondary, #49454f);
+}
+
+/* ---- API key input group ---- */
+.api-key-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.api-key-input {
+  flex: 1;
+  padding: 8px 10px;
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  border: 1px solid var(--divider, #ccc);
+  border-radius: 6px;
+  background: var(--surface, #fff);
+  color: var(--on-surface, #1c1b1f);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.api-key-input:focus {
+  border-color: var(--primary, #6750A4);
+}
+.api-key-input.valid {
+  border-color: #34a853;
+}
+.api-key-input.invalid {
+  border-color: #ea4335;
+}
+.api-key-toggle-btn {
+  padding: 8px 10px;
+  border: 1px solid var(--divider, #ccc);
+  border-radius: 6px;
+  background: var(--surface-variant, #f5f5f5);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--on-surface, #1c1b1f);
+}
+.api-key-toggle-btn:hover {
+  background: var(--divider, #e0e0e0);
+}
+.api-key-status {
+  font-size: 11px;
+  margin-bottom: 12px;
+  min-height: 16px;
+  padding-left: 2px;
+}
+.api-key-status.ok    { color: #34a853; }
+.api-key-status.error { color: #ea4335; }
+
+/* ---- Security notice ---- */
+.api-security-notice {
+  background: #fff8e1;
+  border-left: 3px solid #ffc107;
+  border-radius: 0 4px 4px 0;
+  padding: 8px 10px;
+  font-size: 11px;
+  color: #5d4037;
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+.api-security-notice a {
+  color: #1976d2;
+  text-decoration: none;
+}
+.api-security-notice a:hover {
+  text-decoration: underline;
+}
+
+/* ---- Steps checklist ---- */
+.api-steps-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 14px;
+}
+.api-steps-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 0;
+  font-size: 12px;
+  color: var(--on-surface, #1c1b1f);
+  border-bottom: 1px solid var(--divider, #eee);
+}
+.api-steps-list li:last-child { border-bottom: none; }
+.api-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  border-radius: 50%;
+  background: var(--primary, #6750A4);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+}
+.api-step-text { line-height: 1.4; }
+.api-step-text a { color: #1976d2; text-decoration: none; }
+.api-step-text a:hover { text-decoration: underline; }
+
+/* ---- Maps Properties Panel ---- */
+.maps-props-section {
+  margin-bottom: 14px;
+}
+.maps-props-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--on-surface-secondary, #49454f);
+  margin-bottom: 8px;
+}
+.maps-props-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.maps-props-label {
+  font-size: 12px;
+  color: var(--on-surface, #1c1b1f);
+  min-width: 80px;
+}
+.maps-props-input {
+  flex: 1;
+  padding: 5px 8px;
+  font-size: 12px;
+  border: 1px solid var(--divider, #ccc);
+  border-radius: 4px;
+  background: var(--surface, #fff);
+  color: var(--on-surface, #1c1b1f);
+  outline: none;
+}
+.maps-props-input:focus {
+  border-color: var(--primary, #6750A4);
+}
+.maps-props-select {
+  flex: 1;
+  padding: 5px 8px;
+  font-size: 12px;
+  border: 1px solid var(--divider, #ccc);
+  border-radius: 4px;
+  background: var(--surface, #fff);
+  color: var(--on-surface, #1c1b1f);
+  outline: none;
+}
+.maps-zoom-value {
+  min-width: 28px;
+  text-align: right;
+  font-size: 12px;
+  color: var(--on-surface-secondary, #49454f);
+}
+
+/* ---- Map preview in properties panel ---- */
+.maps-preview-container {
+  width: 100%;
+  height: 140px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--divider, #ccc);
+  margin-bottom: 12px;
+  position: relative;
+  background: #e8f4f8;
+}
+.maps-preview-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+.maps-preview-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--on-surface-secondary, #49454f);
+  gap: 6px;
+}
+.maps-preview-placeholder .preview-icon {
+  font-size: 32px;
+}
+
+/* ---- Marker editor ---- */
+.marker-list {
+  max-height: 180px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+.marker-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  background: var(--surface-variant, #f5f5f5);
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+.marker-item-icon { font-size: 14px; }
+.marker-item-info { flex: 1; overflow: hidden; }
+.marker-item-title {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.marker-item-coords {
+  font-size: 10px;
+  color: var(--on-surface-secondary, #49454f);
+  font-family: var(--font-mono, monospace);
+}
+.marker-item-actions { display: flex; gap: 4px; }
+.marker-item-btn {
+  padding: 3px 6px;
+  border: none;
+  border-radius: 3px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--on-surface-secondary, #49454f);
+}
+.marker-item-btn:hover { background: var(--divider, #e0e0e0); }
+.marker-item-btn.delete:hover { background: #ffebee; color: #c62828; }
+
+.marker-add-btn {
+  width: 100%;
+  padding: 7px;
+  border: 1px dashed var(--primary, #6750A4);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--primary, #6750A4);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.marker-add-btn:hover { background: var(--primary-container, #eaddff); }
+
+/* ---- Marker edit form (inside modal / panel) ---- */
+.marker-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.marker-form-row {
+  display: flex;
+  gap: 8px;
+}
+.marker-form-row .maps-props-input {
+  flex: 1;
+}
+.marker-form label {
+  font-size: 11px;
+  color: var(--on-surface-secondary, #49454f);
+  margin-bottom: 2px;
+  display: block;
+}
+
+/* ---- Map type chip selector ---- */
+.map-type-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.map-type-chip {
+  padding: 4px 10px;
+  border-radius: 16px;
+  border: 1px solid var(--divider, #ccc);
+  font-size: 11px;
+  cursor: pointer;
+  background: var(--surface, #fff);
+  color: var(--on-surface, #1c1b1f);
+  transition: all 0.15s;
+}
+.map-type-chip.active,
+.map-type-chip:hover {
+  background: var(--primary, #6750A4);
+  color: #fff;
+  border-color: var(--primary, #6750A4);
+}
+
+/* ---- Google Maps template cards ---- */
+.maps-template-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.maps-template-card {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--divider, #ccc);
+  cursor: pointer;
+  background: var(--surface, #fff);
+  transition: all 0.15s;
+  text-align: center;
+  font-size: 11px;
+}
+.maps-template-card:hover {
+  border-color: var(--primary, #6750A4);
+  background: var(--primary-container, #eaddff);
+}
+.maps-template-card .template-icon { font-size: 22px; margin-bottom: 4px; }
+.maps-template-card .template-name { font-weight: 500; }
+.maps-template-card .template-desc { color: var(--on-surface-secondary, #49454f); margin-top: 2px; }
+
+/* ---- Maps code panel (inside Kotlin panel) ---- */
+.maps-kotlin-note {
+  background: #e8f5e9;
+  border-left: 3px solid #43a047;
+  border-radius: 0 4px 4px 0;
+  padding: 6px 8px;
+  font-size: 11px;
+  color: #1b5e20;
+  margin-bottom: 8px;
+}
