@@ -1,508 +1,308 @@
 /**
- * components.js - UIコンポーネント定義
- * Android UIコンポーネントのメタデータと生成ロジック
+ * Phase 1: Core UI Component Definitions
+ * Basic Android UI components for the no-code editor
  */
 
-const COMPONENTS = {
-    Button: {
-        name: 'Button',
-        icon: '🔘',
-        category: 'basic',
-        defaultProps: {
-            text: 'Button',
-            width: 120,
-            height: 48,
-            backgroundColor: '#6200EE',
-            textColor: '#FFFFFF',
-            fontSize: 14,
-            cornerRadius: 4,
-            id: ''
-        },
-        render(props) {
-            return `<div class="component-button" style="
-                width:${props.width}px;
-                height:${props.height}px;
-                background:${props.backgroundColor};
-                color:${props.textColor};
-                font-size:${props.fontSize}px;
-                border-radius:${props.cornerRadius}px;
-                display:flex;align-items:center;justify-content:center;
-                cursor:pointer;font-weight:500;user-select:none;
-                box-shadow:0 2px 4px rgba(0,0,0,0.3);">${props.text}</div>`;
-        },
-        generateXML(props, indent) {
-            return `${indent}<Button
-${indent}    android:id="@+id/${props.id || 'button'}"
-${indent}    android:layout_width="${props.width}dp"
-${indent}    android:layout_height="${props.height}dp"
-${indent}    android:text="${props.text}"
-${indent}    android:textColor="${props.textColor}"
-${indent}    android:backgroundTint="${props.backgroundColor}"
-${indent}    android:textSize="${props.fontSize}sp" />`;
-        }
+const CORE_COMPONENTS = [
+  {
+    type: 'Button',
+    category: 'basic',
+    icon: '🔘',
+    label: 'Button',
+    tags: ['button', 'click', 'action'],
+    defaultProps: {
+      text: 'Button',
+      width: 'wrap_content',
+      height: 'wrap_content',
+      backgroundColor: '#6200EE',
+      textColor: '#FFFFFF',
+      textSize: '14sp',
+      padding: '8dp',
+      margin: '4dp',
+      id: '',
+      enabled: true,
     },
-
-    TextView: {
-        name: 'TextView',
-        icon: '📝',
-        category: 'basic',
-        defaultProps: {
-            text: 'Text View',
-            width: 200,
-            height: 40,
-            textColor: '#000000',
-            fontSize: 16,
-            fontWeight: 'normal',
-            id: ''
-        },
-        render(props) {
-            return `<div class="component-textview" style="
-                width:${props.width}px;
-                height:${props.height}px;
-                color:${props.textColor};
-                font-size:${props.fontSize}px;
-                font-weight:${props.fontWeight};
-                display:flex;align-items:center;
-                user-select:none;overflow:hidden;">${props.text}</div>`;
-        },
-        generateXML(props, indent) {
-            return `${indent}<TextView
-${indent}    android:id="@+id/${props.id || 'textView'}"
-${indent}    android:layout_width="${props.width}dp"
-${indent}    android:layout_height="${props.height}dp"
-${indent}    android:text="${props.text}"
-${indent}    android:textColor="${props.textColor}"
-${indent}    android:textSize="${props.fontSize}sp" />`;
-        }
+    preview: (props) => `
+      <button style="
+        background:${props.backgroundColor};
+        color:${props.textColor};
+        padding:8px 16px;
+        border:none;
+        border-radius:4px;
+        font-size:14px;
+        cursor:pointer;
+        font-family:sans-serif;
+      ">${props.text}</button>`,
+    xmlTag: 'Button',
+    xmlAttrs: (props) => ({
+      'android:text': props.text,
+      'android:layout_width': props.width,
+      'android:layout_height': props.height,
+      'android:backgroundTint': props.backgroundColor,
+      'android:textColor': props.textColor,
+      'android:textSize': props.textSize,
+      'android:padding': props.padding,
+      'android:layout_margin': props.margin,
+    }),
+  },
+  {
+    type: 'TextView',
+    category: 'basic',
+    icon: '📝',
+    label: 'TextView',
+    tags: ['text', 'label', 'display'],
+    defaultProps: {
+      text: 'TextView',
+      width: 'wrap_content',
+      height: 'wrap_content',
+      textColor: '#000000',
+      textSize: '16sp',
+      fontStyle: 'normal',
+      padding: '4dp',
+      margin: '4dp',
+      id: '',
+      gravity: 'start',
     },
-
-    EditText: {
-        name: 'EditText',
-        icon: '✏️',
-        category: 'basic',
-        defaultProps: {
-            hint: 'Enter text...',
-            width: 200,
-            height: 48,
-            textColor: '#000000',
-            hintColor: '#999999',
-            fontSize: 16,
-            inputType: 'text',
-            id: ''
-        },
-        render(props) {
-            return `<div class="component-edittext" style="
-                width:${props.width}px;
-                height:${props.height}px;
-                color:${props.hintColor};
-                font-size:${props.fontSize}px;
-                display:flex;align-items:center;padding:0 8px;
-                border-bottom:2px solid #6200EE;
-                user-select:none;overflow:hidden;">${props.hint}</div>`;
-        },
-        generateXML(props, indent) {
-            return `${indent}<EditText
-${indent}    android:id="@+id/${props.id || 'editText'}"
-${indent}    android:layout_width="${props.width}dp"
-${indent}    android:layout_height="${props.height}dp"
-${indent}    android:hint="${props.hint}"
-${indent}    android:textColor="${props.textColor}"
-${indent}    android:textColorHint="${props.hintColor}"
-${indent}    android:inputType="${props.inputType}"
-${indent}    android:textSize="${props.fontSize}sp" />`;
-        }
+    preview: (props) => `
+      <span style="
+        color:${props.textColor};
+        font-size:16px;
+        font-style:${props.fontStyle === 'italic' ? 'italic' : 'normal'};
+        font-weight:${props.fontStyle === 'bold' ? 'bold' : 'normal'};
+        font-family:sans-serif;
+        display:inline-block;
+        padding:4px;
+      ">${props.text}</span>`,
+    xmlTag: 'TextView',
+    xmlAttrs: (props) => ({
+      'android:text': props.text,
+      'android:layout_width': props.width,
+      'android:layout_height': props.height,
+      'android:textColor': props.textColor,
+      'android:textSize': props.textSize,
+      'android:padding': props.padding,
+      'android:layout_margin': props.margin,
+      'android:gravity': props.gravity,
+    }),
+  },
+  {
+    type: 'ListView',
+    category: 'list',
+    icon: '📋',
+    label: 'ListView',
+    tags: ['list', 'scroll', 'items'],
+    defaultProps: {
+      width: 'match_parent',
+      height: '200dp',
+      dividerColor: '#E0E0E0',
+      dividerHeight: '1dp',
+      padding: '0dp',
+      margin: '4dp',
+      id: '',
+      entries: 'Item 1\nItem 2\nItem 3',
     },
-
-    ImageView: {
-        name: 'ImageView',
-        icon: '🖼️',
-        category: 'basic',
-        defaultProps: {
-            src: '',
-            width: 100,
-            height: 100,
-            scaleType: 'centerCrop',
-            backgroundColor: '#E0E0E0',
-            id: ''
-        },
-        render(props) {
-            return `<div class="component-imageview" style="
-                width:${props.width}px;
-                height:${props.height}px;
-                background:${props.backgroundColor};
-                display:flex;align-items:center;justify-content:center;
-                user-select:none;overflow:hidden;font-size:32px;">🖼️</div>`;
-        },
-        generateXML(props, indent) {
-            return `${indent}<ImageView
-${indent}    android:id="@+id/${props.id || 'imageView'}"
-${indent}    android:layout_width="${props.width}dp"
-${indent}    android:layout_height="${props.height}dp"
-${indent}    android:scaleType="${props.scaleType}"
-${indent}    android:src="@drawable/placeholder" />`;
-        }
+    preview: (props) => `
+      <div style="
+        border:1px solid #ccc;
+        border-radius:4px;
+        overflow:hidden;
+        font-family:sans-serif;
+        font-size:14px;
+        min-height:80px;
+      ">
+        ${(props.entries || 'Item 1\nItem 2\nItem 3').split('\n').slice(0, 4).map(item =>
+          `<div style="padding:8px 16px;border-bottom:1px solid #eee;">${item}</div>`
+        ).join('')}
+      </div>`,
+    xmlTag: 'ListView',
+    xmlAttrs: (props) => ({
+      'android:layout_width': props.width,
+      'android:layout_height': props.height,
+      'android:divider': props.dividerColor,
+      'android:dividerHeight': props.dividerHeight,
+      'android:padding': props.padding,
+      'android:layout_margin': props.margin,
+    }),
+  },
+  {
+    type: 'Menu',
+    category: 'navigation',
+    icon: '☰',
+    label: 'OptionsMenu',
+    tags: ['menu', 'navigation', 'options'],
+    defaultProps: {
+      title: 'Options',
+      items: 'Settings\nHelp\nAbout',
+      id: '',
     },
-
-    CheckBox: {
-        name: 'CheckBox',
-        icon: '☑️',
-        category: 'basic',
-        defaultProps: {
-            text: 'CheckBox',
-            width: 150,
-            height: 40,
-            checked: false,
-            textColor: '#000000',
-            fontSize: 14,
-            id: ''
-        },
-        render(props) {
-            return `<div class="component-checkbox" style="
-                width:${props.width}px;
-                height:${props.height}px;
-                color:${props.textColor};
-                font-size:${props.fontSize}px;
-                display:flex;align-items:center;gap:8px;
-                user-select:none;">
-                <span style="font-size:18px;">${props.checked ? '☑' : '☐'}</span>
-                ${props.text}</div>`;
-        },
-        generateXML(props, indent) {
-            return `${indent}<CheckBox
-${indent}    android:id="@+id/${props.id || 'checkBox'}"
-${indent}    android:layout_width="${props.width}dp"
-${indent}    android:layout_height="${props.height}dp"
-${indent}    android:text="${props.text}"
-${indent}    android:checked="${props.checked}"
-${indent}    android:textSize="${props.fontSize}sp" />`;
-        }
+    preview: (props) => `
+      <div style="font-family:sans-serif;font-size:14px;">
+        <div style="background:#6200EE;color:#fff;padding:8px 16px;display:flex;align-items:center;gap:8px;">
+          <span>☰</span><span>${props.title}</span>
+        </div>
+        <div style="border:1px solid #ccc;background:#fff;display:none;" class="menu-dropdown">
+          ${(props.items || '').split('\n').map(item =>
+            `<div style="padding:8px 16px;border-bottom:1px solid #eee;">${item}</div>`
+          ).join('')}
+        </div>
+      </div>`,
+    xmlTag: 'menu',
+    isMenuComponent: true,
+    xmlAttrs: (props) => ({}),
+  },
+  {
+    type: 'Spinner',
+    category: 'basic',
+    icon: '🔽',
+    label: 'Spinner',
+    tags: ['spinner', 'dropdown', 'select'],
+    defaultProps: {
+      width: 'match_parent',
+      height: 'wrap_content',
+      entries: 'Option 1\nOption 2\nOption 3',
+      padding: '4dp',
+      margin: '4dp',
+      id: '',
+      prompt: 'Select an option',
     },
-
-    RadioButton: {
-        name: 'RadioButton',
-        icon: '🔵',
-        category: 'basic',
-        defaultProps: {
-            text: 'RadioButton',
-            width: 150,
-            height: 40,
-            checked: false,
-            textColor: '#000000',
-            fontSize: 14,
-            id: ''
-        },
-        render(props) {
-            return `<div class="component-radiobutton" style="
-                width:${props.width}px;
-                height:${props.height}px;
-                color:${props.textColor};
-                font-size:${props.fontSize}px;
-                display:flex;align-items:center;gap:8px;
-                user-select:none;">
-                <span style="font-size:18px;">${props.checked ? '🔵' : '⚪'}</span>
-                ${props.text}</div>`;
-        },
-        generateXML(props, indent) {
-            return `${indent}<RadioButton
-${indent}    android:id="@+id/${props.id || 'radioButton'}"
-${indent}    android:layout_width="${props.width}dp"
-${indent}    android:layout_height="${props.height}dp"
-${indent}    android:text="${props.text}"
-${indent}    android:checked="${props.checked}"
-${indent}    android:textSize="${props.fontSize}sp" />`;
-        }
+    preview: (props) => `
+      <select style="
+        width:100%;
+        padding:8px;
+        border:1px solid #ccc;
+        border-radius:4px;
+        font-size:14px;
+        font-family:sans-serif;
+      ">
+        ${(props.entries || '').split('\n').map(opt =>
+          `<option>${opt}</option>`
+        ).join('')}
+      </select>`,
+    xmlTag: 'Spinner',
+    xmlAttrs: (props) => ({
+      'android:layout_width': props.width,
+      'android:layout_height': props.height,
+      'android:entries': '@array/spinner_items',
+      'android:padding': props.padding,
+      'android:layout_margin': props.margin,
+      'android:prompt': `@string/${props.id || 'spinner_prompt'}`,
+    }),
+  },
+  {
+    type: 'ScrollView',
+    category: 'layout',
+    icon: '📜',
+    label: 'ScrollView',
+    tags: ['scroll', 'container', 'layout'],
+    defaultProps: {
+      width: 'match_parent',
+      height: 'match_parent',
+      padding: '8dp',
+      margin: '0dp',
+      id: '',
+      fillViewport: true,
     },
-
-    ListView: {
-        name: 'ListView',
-        icon: '📋',
-        category: 'layout',
-        defaultProps: {
-            width: 300,
-            height: 200,
-            itemCount: 3,
-            itemText: 'List Item',
-            backgroundColor: '#FFFFFF',
-            dividerColor: '#E0E0E0',
-            id: ''
-        },
-        render(props) {
-            let items = '';
-            for (let i = 1; i <= Math.min(props.itemCount, 5); i++) {
-                items += `<div style="padding:8px 12px;border-bottom:1px solid ${props.dividerColor};font-size:14px;">${props.itemText} ${i}</div>`;
-            }
-            if (props.itemCount > 5) {
-                items += `<div style="padding:8px 12px;color:#999;font-size:12px;">... (${props.itemCount - 5} more)</div>`;
-            }
-            return `<div class="component-listview" style="
-                width:${props.width}px;
-                height:${props.height}px;
-                background:${props.backgroundColor};
-                border:1px solid #E0E0E0;
-                overflow:hidden;
-                user-select:none;">${items}</div>`;
-        },
-        generateXML(props, indent) {
-            return `${indent}<ListView
-${indent}    android:id="@+id/${props.id || 'listView'}"
-${indent}    android:layout_width="${props.width}dp"
-${indent}    android:layout_height="${props.height}dp"
-${indent}    android:divider="${props.dividerColor}"
-${indent}    android:dividerHeight="1dp" />`;
-        }
+    preview: (props) => `
+      <div style="
+        border:2px dashed #9C27B0;
+        border-radius:4px;
+        padding:8px;
+        min-height:80px;
+        background:rgba(156,39,176,0.05);
+        font-family:sans-serif;
+        font-size:12px;
+        color:#9C27B0;
+        text-align:center;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+      ">📜 ScrollView</div>`,
+    xmlTag: 'ScrollView',
+    xmlAttrs: (props) => ({
+      'android:layout_width': props.width,
+      'android:layout_height': props.height,
+      'android:padding': props.padding,
+      'android:layout_margin': props.margin,
+      'android:fillViewport': props.fillViewport ? 'true' : 'false',
+    }),
+  },
+  {
+    type: 'ImageButton',
+    category: 'basic',
+    icon: '🖼',
+    label: 'ImageButton',
+    tags: ['image', 'button', 'icon'],
+    defaultProps: {
+      width: 'wrap_content',
+      height: 'wrap_content',
+      src: '@drawable/ic_launcher',
+      contentDescription: 'Image Button',
+      padding: '8dp',
+      margin: '4dp',
+      id: '',
+      scaleType: 'fitCenter',
     },
-
-    RecyclerView: {
-        name: 'RecyclerView',
-        icon: '♻️',
-        category: 'layout',
-        defaultProps: {
-            width: 300,
-            height: 200,
-            orientation: 'vertical',
-            backgroundColor: '#FFFFFF',
-            id: ''
-        },
-        render(props) {
-            const items = [1, 2, 3].map(i =>
-                `<div style="padding:12px;border-bottom:1px solid #E0E0E0;display:flex;align-items:center;gap:12px;font-size:14px;">
-                    <div style="width:40px;height:40px;background:#6200EE;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:16px;">${i}</div>
-                    <div>Item ${i}</div>
-                </div>`
-            ).join('');
-            return `<div class="component-recyclerview" style="
-                width:${props.width}px;
-                height:${props.height}px;
-                background:${props.backgroundColor};
-                border:1px solid #E0E0E0;
-                overflow:hidden;
-                user-select:none;">${items}</div>`;
-        },
-        generateXML(props, indent) {
-            return `${indent}<androidx.recyclerview.widget.RecyclerView
-${indent}    android:id="@+id/${props.id || 'recyclerView'}"
-${indent}    android:layout_width="${props.width}dp"
-${indent}    android:layout_height="${props.height}dp"
-${indent}    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-${indent}    android:orientation="${props.orientation}" />`;
-        }
+    preview: (props) => `
+      <button style="
+        background:#F5F5F5;
+        border:1px solid #ccc;
+        border-radius:4px;
+        padding:8px;
+        cursor:pointer;
+        font-size:24px;
+      ">🖼</button>`,
+    xmlTag: 'ImageButton',
+    xmlAttrs: (props) => ({
+      'android:layout_width': props.width,
+      'android:layout_height': props.height,
+      'android:src': props.src,
+      'android:contentDescription': props.contentDescription,
+      'android:padding': props.padding,
+      'android:layout_margin': props.margin,
+      'android:scaleType': props.scaleType,
+    }),
+  },
+  {
+    type: 'Switch',
+    category: 'basic',
+    icon: '🔄',
+    label: 'Switch',
+    tags: ['switch', 'toggle', 'boolean'],
+    defaultProps: {
+      width: 'wrap_content',
+      height: 'wrap_content',
+      text: 'Switch',
+      checked: false,
+      padding: '4dp',
+      margin: '4dp',
+      id: '',
+      thumbTint: '#6200EE',
     },
+    preview: (props) => `
+      <label style="
+        display:flex;
+        align-items:center;
+        gap:8px;
+        font-family:sans-serif;
+        font-size:14px;
+        cursor:pointer;
+      ">
+        <input type="checkbox" ${props.checked ? 'checked' : ''} style="width:40px;height:20px;">
+        <span>${props.text}</span>
+      </label>`,
+    xmlTag: 'Switch',
+    xmlAttrs: (props) => ({
+      'android:layout_width': props.width,
+      'android:layout_height': props.height,
+      'android:text': props.text,
+      'android:checked': props.checked ? 'true' : 'false',
+      'android:padding': props.padding,
+      'android:layout_margin': props.margin,
+      'android:thumbTint': props.thumbTint,
+    }),
+  },
+];
 
-    LinearLayout: {
-        name: 'LinearLayout',
-        icon: '▤',
-        category: 'layout',
-        defaultProps: {
-            width: 280,
-            height: 120,
-            orientation: 'vertical',
-            backgroundColor: 'rgba(98,0,238,0.05)',
-            padding: 8,
-            id: ''
-        },
-        render(props) {
-            return `<div class="component-linearlayout" style="
-                width:${props.width}px;
-                height:${props.height}px;
-                background:${props.backgroundColor};
-                border:2px dashed #6200EE;
-                padding:${props.padding}px;
-                display:flex;
-                flex-direction:${props.orientation === 'vertical' ? 'column' : 'row'};
-                user-select:none;box-sizing:border-box;">
-                <span style="color:#6200EE;font-size:11px;font-weight:500;">LinearLayout (${props.orientation})</span>
-            </div>`;
-        },
-        generateXML(props, indent) {
-            return `${indent}<LinearLayout
-${indent}    android:id="@+id/${props.id || 'linearLayout'}"
-${indent}    android:layout_width="${props.width}dp"
-${indent}    android:layout_height="${props.height}dp"
-${indent}    android:orientation="${props.orientation}"
-${indent}    android:padding="${props.padding}dp">
-${indent}</LinearLayout>`;
-        }
-    },
-
-    FrameLayout: {
-        name: 'FrameLayout',
-        icon: '▢',
-        category: 'layout',
-        defaultProps: {
-            width: 280,
-            height: 120,
-            backgroundColor: 'rgba(3,169,244,0.05)',
-            id: ''
-        },
-        render(props) {
-            return `<div class="component-framelayout" style="
-                width:${props.width}px;
-                height:${props.height}px;
-                background:${props.backgroundColor};
-                border:2px dashed #03A9F4;
-                display:flex;align-items:center;justify-content:center;
-                user-select:none;">
-                <span style="color:#03A9F4;font-size:11px;font-weight:500;">FrameLayout</span>
-            </div>`;
-        },
-        generateXML(props, indent) {
-            return `${indent}<FrameLayout
-${indent}    android:id="@+id/${props.id || 'frameLayout'}"
-${indent}    android:layout_width="${props.width}dp"
-${indent}    android:layout_height="${props.height}dp">
-${indent}</FrameLayout>`;
-        }
-    },
-
-    Toolbar: {
-        name: 'Toolbar',
-        icon: '🔧',
-        category: 'navigation',
-        defaultProps: {
-            title: 'App Title',
-            width: 360,
-            height: 56,
-            backgroundColor: '#6200EE',
-            textColor: '#FFFFFF',
-            id: ''
-        },
-        render(props) {
-            return `<div class="component-toolbar" style="
-                width:${props.width}px;
-                height:${props.height}px;
-                background:${props.backgroundColor};
-                color:${props.textColor};
-                display:flex;align-items:center;
-                padding:0 16px;
-                font-size:20px;font-weight:500;
-                user-select:none;
-                box-shadow:0 2px 4px rgba(0,0,0,0.3);">
-                ☰ ${props.title}
-            </div>`;
-        },
-        generateXML(props, indent) {
-            return `${indent}<androidx.appcompat.widget.Toolbar
-${indent}    android:id="@+id/${props.id || 'toolbar'}"
-${indent}    android:layout_width="${props.width}dp"
-${indent}    android:layout_height="${props.height}dp"
-${indent}    android:background="${props.backgroundColor}"
-${indent}    app:title="${props.title}"
-${indent}    app:titleTextColor="${props.textColor}" />`;
-        }
-    },
-
-    BottomNavigation: {
-        name: 'BottomNavigation',
-        icon: '⬇️',
-        category: 'navigation',
-        defaultProps: {
-            width: 360,
-            height: 56,
-            backgroundColor: '#FFFFFF',
-            activeColor: '#6200EE',
-            items: 'Home,Search,Profile',
-            id: ''
-        },
-        render(props) {
-            const items = props.items.split(',');
-            const icons = ['🏠', '🔍', '👤', '❤️', '⚙️'];
-            const itemsHtml = items.map((item, i) =>
-                `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-                    color:${i === 0 ? props.activeColor : '#757575'};font-size:10px;gap:2px;">
-                    <span style="font-size:18px;">${icons[i % icons.length]}</span>
-                    <span>${item.trim()}</span>
-                </div>`
-            ).join('');
-            return `<div class="component-bottomnav" style="
-                width:${props.width}px;
-                height:${props.height}px;
-                background:${props.backgroundColor};
-                display:flex;align-items:center;
-                border-top:1px solid #E0E0E0;
-                user-select:none;">${itemsHtml}</div>`;
-        },
-        generateXML(props, indent) {
-            return `${indent}<com.google.android.material.bottomnavigation.BottomNavigationView
-${indent}    android:id="@+id/${props.id || 'bottomNavigation'}"
-${indent}    android:layout_width="${props.width}dp"
-${indent}    android:layout_height="${props.height}dp"
-${indent}    android:background="${props.backgroundColor}"
-${indent}    app:itemIconTint="${props.activeColor}"
-${indent}    app:itemTextColor="${props.activeColor}"
-${indent}    app:menu="@menu/bottom_nav_menu" />`;
-        }
-    },
-
-    FloatingActionButton: {
-        name: 'FloatingActionButton',
-        icon: '➕',
-        category: 'basic',
-        defaultProps: {
-            icon: '+',
-            width: 56,
-            height: 56,
-            backgroundColor: '#6200EE',
-            iconColor: '#FFFFFF',
-            id: ''
-        },
-        render(props) {
-            return `<div class="component-fab" style="
-                width:${props.width}px;
-                height:${props.height}px;
-                background:${props.backgroundColor};
-                color:${props.iconColor};
-                border-radius:50%;
-                display:flex;align-items:center;justify-content:center;
-                font-size:24px;font-weight:bold;
-                cursor:pointer;
-                user-select:none;
-                box-shadow:0 4px 8px rgba(0,0,0,0.3);">${props.icon}</div>`;
-        },
-        generateXML(props, indent) {
-            return `${indent}<com.google.android.material.floatingactionbutton.FloatingActionButton
-${indent}    android:id="@+id/${props.id || 'fab'}"
-${indent}    android:layout_width="wrap_content"
-${indent}    android:layout_height="wrap_content"
-${indent}    android:backgroundTint="${props.backgroundColor}"
-${indent}    app:tint="${props.iconColor}"
-${indent}    app:srcCompat="@drawable/ic_add" />`;
-        }
-    }
-};
-
-/**
- * コンポーネントのデフォルトプロパティを取得
- */
-function getDefaultProps(type) {
-    if (!COMPONENTS[type]) return {};
-    return Object.assign({}, COMPONENTS[type].defaultProps);
-}
-
-/**
- * コンポーネントのHTMLをレンダリング
- */
-function renderComponent(type, props) {
-    if (!COMPONENTS[type]) return '<div>Unknown Component</div>';
-    return COMPONENTS[type].render(props);
-}
-
-/**
- * コンポーネントのXMLを生成
- */
-function generateComponentXML(type, props, indent = '    ') {
-    if (!COMPONENTS[type]) return '';
-    return COMPONENTS[type].generateXML(props, indent);
-}
-
-/**
- * カテゴリ別コンポーネント一覧を取得
- */
-function getComponentsByCategory() {
-    const categories = {};
-    Object.entries(COMPONENTS).forEach(([key, comp]) => {
-        const cat = comp.category || 'other';
-        if (!categories[cat]) categories[cat] = [];
-        categories[cat].push({ key, ...comp });
-    });
-    return categories;
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = CORE_COMPONENTS;
 }

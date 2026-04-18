@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ImageView Properties</title>
+<style>
+  body { font-family: Roboto, sans-serif; font-size: 13px; margin: 0; padding: 8px; }
+  .prop-group { margin-bottom: 10px; }
+  label { display: block; font-size: 11px; font-weight: 600; color: #5f6368; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  input, select { width: 100%; padding: 6px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; box-sizing: border-box; }
+  input:focus, select:focus { outline: none; border-color: #6200EE; }
+  .preview { border: 1px solid #ddd; border-radius: 8px; padding: 12px; background: #fafafa; display: flex; align-items: center; justify-content: center; min-height: 100px; margin-bottom: 12px; }
+  .preview img { max-width: 100%; max-height: 120px; border-radius: 4px; }
+  .preview-placeholder { width: 80px; height: 80px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: white; }
+  h3 { font-size: 14px; margin: 0 0 10px; color: #202124; }
+</style>
+</head>
+<body>
+<h3>🖼️ ImageView</h3>
+<div class="preview">
+  <div class="preview-placeholder">🖼️</div>
+</div>
+<div class="prop-group">
+  <label>Source (@drawable)</label>
+  <input type="text" placeholder="@drawable/ic_launcher">
+</div>
+<div class="prop-group">
+  <label>Content Description</label>
+  <input type="text" placeholder="画像の説明">
+</div>
+<div class="prop-group">
+  <label>Scale Type</label>
+  <select>
+    <option>centerCrop</option>
+    <option>fitCenter</option>
+    <option>fitXY</option>
+    <option>centerInside</option>
+    <option>center</option>
+    <option>matrix</option>
+  </select>
+</div>
+<div class="prop-group">
+  <label>Width</label>
+  <input type="text" placeholder="100dp">
+</div>
+<div class="prop-group">
+  <label>Height</label>
+  <input type="text" placeholder="100dp">
+</div>
+<div class="prop-group">
+  <label>Adjust View Bounds</label>
+  <input type="checkbox">
+</div>
+</body>
+</html>

@@ -1,556 +1,886 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Android No-Code Editor</title>
-    <link rel="stylesheet" href="styles/style.css">
-    <link rel="stylesheet" href="styles/phase2-extensions.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&family=Fira+Code&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Android No-Code Editor</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="styles/phase3-components.css">
+  <link rel="stylesheet" href="styles/material-design.css">
+  <link rel="stylesheet" href="styles/google-apis.css">
 </head>
 <body>
 
-<!-- ============================================================
-     TOP BAR
-     ============================================================ -->
-<div id="topbar">
-    <span class="app-title">📱 NoCode</span>
-    <input id="project-name" type="text" placeholder="プロジェクト名" value="Untitled Project">
-    <div class="separator"></div>
+<div class="app-wrapper">
 
-    <!-- Undo/Redo -->
-    <button id="btn-undo" class="topbar-btn" title="元に戻す (Ctrl+Z)" disabled>↩ Undo</button>
-    <button id="btn-redo" class="topbar-btn" title="やり直す (Ctrl+Y)" disabled>↪ Redo</button>
-    <div class="separator"></div>
+  <!-- ===== Top Toolbar ===== -->
+  <header class="app-toolbar">
+    <span class="app-title">📱 Android No-Code Editor <span>Phase 4</span></span>
 
-    <!-- Save/Load -->
-    <button id="btn-save" class="topbar-btn" title="プロジェクトを保存">💾 Save</button>
-    <button id="btn-load" class="topbar-btn" title="プロジェクトを読込">📂 Load</button>
-    <div class="separator"></div>
+    <!-- Undo / Redo -->
+    <button class="toolbar-btn" id="btnUndo" disabled title="元に戻す (Ctrl+Z)">↩ Undo</button>
+    <button class="toolbar-btn" id="btnRedo" disabled title="やり直す (Ctrl+Y)">↪ Redo</button>
 
-    <!-- Clear -->
-    <button id="btn-clear" class="topbar-btn danger" title="すべてクリア">🗑 Clear</button>
+    <div class="toolbar-divider"></div>
 
-    <!-- Spacer -->
-    <div class="flex-spacer"></div>
+    <!-- Project controls -->
+    <button class="toolbar-btn" id="btnSave" title="保存 (Ctrl+S)">💾 保存</button>
+    <button class="toolbar-btn" id="btnClear" title="クリア">🗑 クリア</button>
 
-    <!-- History indicator -->
-    <span id="history-indicator"></span>
+    <div class="toolbar-divider"></div>
 
-    <!-- Auto save indicator -->
-    <span id="autosave-indicator">自動保存: --</span>
-    <div class="separator"></div>
+    <!-- Export -->
+    <button class="toolbar-btn" id="btnExportXml" title="XMLをダウンロード">📥 XML</button>
+    <button class="toolbar-btn" id="btnExportKt" title="Kotlinをダウンロード">📥 Kotlin</button>
+    <button class="toolbar-btn" id="btnExportJson" title="JSONで保存">📦 JSON</button>
 
-    <!-- Zoom controls -->
-    <div id="zoom-controls">
-        <button id="btn-zoom-out" class="topbar-btn" title="ズームアウト">－</button>
-        <span id="zoom-level">100%</span>
-        <button id="btn-zoom-in" class="topbar-btn" title="ズームイン">＋</button>
-        <button id="btn-zoom-reset" class="topbar-btn" title="ズームリセット">⊙</button>
+    <div class="toolbar-divider"></div>
+
+    <!-- Theme generator -->
+    <button class="toolbar-btn" id="btnGenerateTheme" title="Material Designテーマ生成">🎨 テーマ生成</button>
+
+    <!-- Google API settings -->
+    <button class="toolbar-btn google-api-btn" id="btnGoogleApiSettings" title="Google API設定">🔑 Google API</button>
+
+    <div class="toolbar-spacer"></div>
+
+    <!-- Device selector -->
+    <button class="toolbar-btn active" data-device="phone_portrait" title="スマートフォン（縦）">📱</button>
+    <button class="toolbar-btn" data-device="phone_landscape" title="スマートフォン（横）">📱↔</button>
+    <button class="toolbar-btn" data-device="tablet_portrait" title="タブレット（縦）">📟</button>
+  </header>
+
+  <!-- ===== Main Body ===== -->
+  <div class="app-body">
+
+    <!-- ===== Left Sidebar: Component Palette ===== -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title">コンポーネント</div>
+        <div class="search-box">
+          <input type="text" id="componentSearch" class="search-input" placeholder="コンポーネントを検索..." autocomplete="off">
+          <span class="search-icon">🔍</span>
+        </div>
+      </div>
+
+      <!-- Category tabs -->
+      <div class="category-tabs">
+        <button class="category-tab active" data-category="all">すべて</button>
+        <button class="category-tab" data-category="basic">基本</button>
+        <button class="category-tab" data-category="layout">レイアウト</button>
+        <button class="category-tab" data-category="list">リスト</button>
+        <button class="category-tab" data-category="material">Material</button>
+        <button class="category-tab" data-category="navigation">ナビ</button>
+        <button class="category-tab" data-category="google">Google</button>
+        <button class="category-tab" data-category="weather">Weather</button>
+        <button class="category-tab" data-category="payment">Payment</button>
+        <button class="category-tab" data-category="ecommerce">eCommerce</button>
+        <button class="category-tab" data-category="favorites">★</button>
+        <button class="category-tab" data-category="recent">最近</button>
+      </div>
+
+      <!-- Component list -->
+      <div class="palette-scroll">
+        <div id="componentPalette">
+          <div class="palette-empty">読み込み中...</div>
+        </div>
+      </div>
+
+      <!-- Sample templates -->
+      <div class="samples-section">
+        <div class="samples-title">サンプルテンプレート</div>
+        <div class="samples-list">
+          <button class="sample-btn" data-sample="options_menu">☰ オプションメニュー</button>
+          <button class="sample-btn" data-sample="list_view">📋 リストビュー</button>
+          <button class="sample-btn" data-sample="list_select">🔽 リスト選択</button>
+          <button class="sample-btn" data-sample="login_form">🔐 ログインフォーム</button>
+          <button class="sample-btn" data-sample="settings">⚙️ 設定画面</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===== Center: Canvas ===== -->
+    <main class="canvas-area">
+      <!-- Canvas toolbar -->
+      <div class="canvas-toolbar">
+        <span class="canvas-toolbar-label">ズーム:</span>
+        <button class="canvas-btn" id="btnZoomOut" title="ズームアウト">－</button>
+        <span class="zoom-label" id="zoomLabel">100%</span>
+        <button class="canvas-btn" id="btnZoomIn" title="ズームイン">＋</button>
+        <button class="canvas-btn" id="btnZoomReset" title="ズームリセット">↺</button>
+
+        <div style="width:1px;height:20px;background:var(--divider);margin:0 8px;"></div>
+
+        <button class="canvas-btn" id="btnGrid" title="グリッド表示">⊞ グリッド</button>
+
+        <div style="width:1px;height:20px;background:var(--divider);margin:0 8px;"></div>
+
+        <span class="canvas-toolbar-label" id="componentCount" style="font-size:12px;color:var(--on-surface-secondary);">0 コンポーネント</span>
+      </div>
+
+      <!-- Scrollable canvas area -->
+      <div class="canvas-scroll">
+        <div class="canvas-wrapper" id="canvasWrapper">
+          <div id="canvas"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ===== Right Panel: Properties + Code ===== -->
+    <aside class="right-panel">
+      <div class="panel-tabs">
+        <button class="panel-tab active" id="tabProperties" onclick="switchRightPanel('properties')">プロパティ</button>
+        <button class="panel-tab" id="tabCode" onclick="switchRightPanel('code')">コード</button>
+        <button class="panel-tab" id="tabDeps" onclick="switchRightPanel('deps')">依存関係</button>
+      </div>
+
+      <!-- Properties panel -->
+      <div class="panel-content" id="panelProperties">
+        <div id="propertiesPanel">
+          <div class="properties-empty">
+            <div>コンポーネントを選択</div>
+            <div class="properties-empty-hint">クリックして選択すると<br>プロパティを編集できます</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Code panel -->
+      <div class="panel-content" id="panelCode" style="display:none;">
+        <div class="code-tabs">
+          <button class="code-tab active" data-code-tab="xml">XML</button>
+          <button class="code-tab" data-code-tab="kotlin">Kotlin</button>
+          <button class="code-tab" data-code-tab="strings">strings.xml</button>
+        </div>
+
+        <!-- XML panel -->
+        <div data-code-panel="xml" class="code-panel" style="display:flex;flex-direction:column;">
+          <div class="code-actions">
+            <button class="code-action-btn" id="btnCopyXml">📋 コピー</button>
+            <button class="code-action-btn" id="btnExportXml2" onclick="document.getElementById('btnExportXml').click()">⬇ DL</button>
+          </div>
+          <div class="code-output-wrapper">
+            <pre class="code-output" id="xmlOutput">&lt;!-- コンポーネントを追加するとXMLが生成されます --&gt;</pre>
+          </div>
+        </div>
+
+        <!-- Kotlin panel -->
+        <div data-code-panel="kotlin" class="code-panel" style="display:none;flex-direction:column;">
+          <div class="code-actions">
+            <button class="code-action-btn" id="btnCopyKt">📋 コピー</button>
+            <button class="code-action-btn" id="btnExportKt2" onclick="document.getElementById('btnExportKt').click()">⬇ DL</button>
+          </div>
+          <div class="code-output-wrapper">
+            <pre class="code-output" id="kotlinOutput">// コンポーネントを追加するとKotlinコードが生成されます</pre>
+          </div>
+        </div>
+
+        <!-- strings.xml panel -->
+        <div data-code-panel="strings" class="code-panel" style="display:none;flex-direction:column;">
+          <div class="code-actions">
+            <button class="code-action-btn" id="btnCopyStrings">📋 コピー</button>
+          </div>
+          <div class="code-output-wrapper">
+            <pre class="code-output" id="stringsOutput">&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;resources&gt;
+    &lt;string name="app_name"&gt;MyApp&lt;/string&gt;
+&lt;/resources&gt;</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dependencies panel -->
+      <div class="panel-content" id="panelDeps" style="display:none;">
+        <div style="padding:12px;">
+          <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--on-surface-secondary);margin-bottom:8px;">
+            必要な依存関係
+          </div>
+          <div id="depsOutput" style="font-size:12px;color:var(--on-surface-secondary);">
+            コンポーネントを追加すると依存関係が表示されます
+          </div>
+          <hr class="code-section-sep" style="margin-top:16px;">
+          <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--on-surface-secondary);margin-bottom:8px;margin-top:12px;">
+            AndroidManifest.xml
+          </div>
+          <div class="code-output-wrapper" style="max-height:200px;overflow-y:auto;background:var(--surface-variant);border-radius:4px;">
+            <pre class="code-output" id="manifestOutput" style="font-size:10px;padding:8px;"></pre>
+          </div>
+          <hr class="code-section-sep">
+          <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--on-surface-secondary);margin-bottom:8px;">
+            build.gradle (app)
+          </div>
+          <div class="code-output-wrapper" style="max-height:200px;overflow-y:auto;background:var(--surface-variant);border-radius:4px;">
+            <pre class="code-output" id="gradleOutput" style="font-size:10px;padding:8px;"></pre>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+  </div><!-- /app-body -->
+</div><!-- /app-wrapper -->
+
+
+<!-- ===== Theme Generator Modal ===== -->
+<div class="modal-overlay" id="themeModal">
+  <div class="modal" style="max-width:560px;">
+    <div class="modal-title">🎨 Material Design テーマ生成</div>
+
+    <div class="theme-gen-panel">
+      <label class="theme-field-label">アプリ名</label>
+      <input type="text" class="theme-field-input" id="themeAppName" value="MyApp" placeholder="MyApp">
+
+      <label class="theme-field-label">パッケージ名</label>
+      <input type="text" class="theme-field-input" id="themePackageName" value="com.example.myapp" placeholder="com.example.myapp">
+
+      <label class="theme-field-label">テーマカラー</label>
+      <div class="color-swatch-grid" id="colorSwatches"></div>
+
+      <label class="theme-field-label">プレビュー</label>
+      <div class="theme-gen-preview">
+        <div class="theme-gen-preview-bar" id="themePreviewBar" style="background:#6750A4;">
+          <span id="themePreviewTitle">MyApp</span>
+        </div>
+        <div class="theme-gen-preview-content">
+          <button class="md3-btn md3-btn-filled" id="themePreviewBtn" style="background:#6750A4;">確認</button>
+          <button class="md3-btn md3-btn-outlined" id="themePreviewBtnOutlined" style="color:#6750A4;border-color:#79747E;">キャンセル</button>
+          <div class="md3-chip md3-chip-filter" id="themePreviewChip" style="background:#E8DEF8;color:#21005D;">チップ</div>
+        </div>
+      </div>
     </div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="document.getElementById('themeModal').style.display='none'">閉じる</button>
+      <button class="btn-primary" id="btnDownloadTheme">📥 themes.xml を生成</button>
+      <button class="btn-primary" id="btnDownloadColors">📥 colors.xml を生成</button>
+      <button class="btn-primary" id="btnDownloadManifest">📥 Manifest を生成</button>
+    </div>
+  </div>
 </div>
 
-<!-- ============================================================
-     MAIN LAYOUT
-     ============================================================ -->
-<div id="main-layout">
 
-    <!-- LEFT SIDEBAR -->
-    <div id="left-sidebar">
-        <div class="sidebar-tabs">
-            <div class="sidebar-tab active" data-tab="components">コンポーネント</div>
-            <div class="sidebar-tab" data-tab="templates">テンプレート</div>
-        </div>
+<!-- ===== Google API Settings Modal ===== -->
+<div class="modal-overlay" id="googleApiModal">
+  <div class="modal" style="max-width:560px;">
+    <div class="modal-title">🔑 API 設定</div>
 
-        <!-- Components Tab -->
-        <div id="tab-components" class="sidebar-tab-content active">
-            <div id="component-palette"></div>
-
-            <!-- サンプル -->
-            <div id="samples-section">
-                <div class="palette-section-title" style="padding: 0 4px 4px;">サンプル</div>
-                <div class="sample-item" data-sample="sample_menu">📋 オプションメニュー</div>
-                <div class="sample-item" data-sample="sample_listview">📝 リストビュー</div>
-                <div class="sample-item" data-sample="sample_select">☑️ リスト選択</div>
-            </div>
-        </div>
-
-        <!-- Templates Tab -->
-        <div id="tab-templates" class="sidebar-tab-content">
-            <div id="templates-panel">
-                <button id="btn-save-template">➕ 現在の設計をテンプレートに保存</button>
-                <button id="btn-import-template">📥 テンプレートをインポート</button>
-                <div id="templates-list"></div>
-            </div>
-        </div>
+    <!-- Tab bar: Google Maps / 外部API -->
+    <div class="ext-api-tabs" id="apiModalTabs">
+      <button class="ext-api-tab active" data-api-tab="maps">🗺️ Google Maps</button>
+      <button class="ext-api-tab" data-api-tab="weather">🌤️ OpenWeatherMap</button>
+      <button class="ext-api-tab" data-api-tab="stripe">💳 Stripe</button>
+      <button class="ext-api-tab" data-api-tab="rakuten">🛒 楽天</button>
     </div>
 
-    <!-- CANVAS AREA -->
-    <div id="canvas-area">
-
-        <!-- Grid Controls -->
-        <div id="grid-controls-panel">
-            <label>
-                <input type="checkbox" id="chk-grid" checked> グリッド表示
-            </label>
-            <label>
-                <input type="checkbox" id="chk-snap" checked> スナップ
-            </label>
-            <div class="grid-size-control">
-                グリッドサイズ:
-                <select id="sel-grid-size">
-                    <option value="10">10px</option>
-                    <option value="20" selected>20px</option>
-                    <option value="40">40px</option>
-                    <option value="50">50px</option>
-                </select>
-            </div>
-            <span class="flex-spacer"></span>
-            <span id="canvas-size-label">360 × 640 px</span>
+    <!-- ---- Google Maps panel ---- -->
+    <div class="ext-api-panel active" id="apiPanel-maps">
+      <div class="google-modal-header">
+        <div class="google-modal-logo">🗺️</div>
+        <div class="google-modal-title-block">
+          <h2>Google Maps API キー</h2>
+          <p>MapView コンポーネントの地図表示に使用します</p>
         </div>
-
-        <!-- Canvas Container (handles zoom/pan) -->
-        <div id="canvas-container">
-            <div id="canvas">
-                <!-- Components are added here dynamically -->
-            </div>
-            <div id="canvas-zoom-badge">100%</div>
+      </div>
+      <div class="api-security-notice">
+        ⚠️ APIキーはローカルストレージに難読化保存されます。本番環境では
+        <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener">
+          Google Cloud Console
+        </a>
+        でキーに制限を設定してください。
+      </div>
+      <div class="maps-props-section">
+        <div class="maps-props-section-title">Maps API キー</div>
+        <div class="api-key-group">
+          <input type="password" id="gApiKeyInput" class="api-key-input"
+                 placeholder="AIzaSy..." autocomplete="off" spellcheck="false">
+          <button class="api-key-toggle-btn" id="gApiKeyToggle" title="表示/非表示">👁</button>
         </div>
+        <div class="api-key-status" id="gApiKeyStatus"></div>
+      </div>
+      <div class="maps-props-section">
+        <div class="maps-props-section-title">キー取得手順</div>
+        <ol class="api-steps-list">
+          <li><span class="api-step-num">1</span><span class="api-step-text"><a href="https://console.cloud.google.com/" target="_blank" rel="noopener">Google Cloud Console</a> でプロジェクトを作成または選択</span></li>
+          <li><span class="api-step-num">2</span><span class="api-step-text">「APIとサービス」→「ライブラリ」から <strong>Maps SDK for Android</strong> を有効化</span></li>
+          <li><span class="api-step-num">3</span><span class="api-step-text">「認証情報」→「認証情報を作成」→「APIキー」をクリック</span></li>
+          <li><span class="api-step-num">4</span><span class="api-step-text">作成されたキーを上のフィールドに貼り付けて「保存」</span></li>
+          <li><span class="api-step-num">5</span><span class="api-step-text">「キーを制限」でAndroidアプリのパッケージ名・SHA-1を設定（推奨）</span></li>
+        </ol>
+      </div>
     </div>
 
-    <!-- RIGHT PANEL -->
-    <div id="right-panel">
-        <div class="panel-tabs">
-            <div class="panel-tab active" data-panel="properties">プロパティ</div>
-            <div class="panel-tab" data-panel="code">コード</div>
+    <!-- ---- OpenWeatherMap panel ---- -->
+    <div class="ext-api-panel" id="apiPanel-weather">
+      <div class="google-modal-header">
+        <div class="google-modal-logo">🌤️</div>
+        <div class="google-modal-title-block">
+          <h2>OpenWeatherMap APIキー</h2>
+          <p>WeatherView コンポーネントの天気データ取得に使用します</p>
         </div>
-
-        <!-- Properties Panel -->
-        <div id="panel-properties" class="panel-content active">
-            <div id="properties-panel">
-                <div id="properties-empty">
-                    <p>コンポーネントを選択してください</p>
-                </div>
-                <span id="selected-component-type" style="display:none;"></span>
-                <div id="property-fields"></div>
-            </div>
-            <button id="btn-delete-component" disabled>🗑 コンポーネントを削除</button>
+      </div>
+      <div class="api-security-notice">
+        ⚠️ APIキーはローカルストレージに難読化保存されます。
+        <a href="https://openweathermap.org/api" target="_blank" rel="noopener">openweathermap.org</a>
+        で無料アカウントを作成してキーを取得してください。
+      </div>
+      <div class="maps-props-section">
+        <div class="maps-props-section-title">OpenWeatherMap APIキー</div>
+        <div class="api-key-group">
+          <input type="password" id="weatherApiKeyInput" class="api-key-input"
+                 placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false">
+          <button class="api-key-toggle-btn" id="weatherApiKeyToggle" title="表示/非表示">👁</button>
         </div>
-
-        <!-- Code Panel -->
-        <div id="panel-code" class="panel-content">
-            <div id="code-mode-selector">
-                <button class="code-mode-btn active" data-mode="xml">XML</button>
-                <button class="code-mode-btn" data-mode="kotlin">Kotlin</button>
-                <button class="code-mode-btn" data-mode="strings">strings</button>
-            </div>
-            <pre id="code-output"></pre>
-            <button id="btn-copy-code">📋 コピー</button>
-        </div>
+        <div class="api-key-status" id="weatherApiKeyStatus"></div>
+      </div>
+      <div class="maps-props-section">
+        <div class="maps-props-section-title">キー取得手順</div>
+        <ol class="api-steps-list">
+          <li><span class="api-step-num">1</span><span class="api-step-text"><a href="https://openweathermap.org/api" target="_blank" rel="noopener">openweathermap.org/api</a> で無料アカウントを作成</span></li>
+          <li><span class="api-step-num">2</span><span class="api-step-text">ログイン後、右上ユーザー名 →「My API keys」をクリック</span></li>
+          <li><span class="api-step-num">3</span><span class="api-step-text">デフォルトキーをコピー（または「Generate」で新規作成）</span></li>
+          <li><span class="api-step-num">4</span><span class="api-step-text">上のフィールドに貼り付けて「保存」（有効化まで最大10分かかります）</span></li>
+        </ol>
+      </div>
     </div>
 
+    <!-- ---- Stripe panel ---- -->
+    <div class="ext-api-panel" id="apiPanel-stripe">
+      <div class="google-modal-header">
+        <div class="google-modal-logo">💳</div>
+        <div class="google-modal-title-block">
+          <h2>Stripe 公開キー</h2>
+          <p>PaymentForm コンポーネントの決済処理に使用します</p>
+        </div>
+      </div>
+      <div class="api-security-notice" style="background:#fff8e1;border-color:#f9a825;">
+        🔒 <strong>シークレットキー (sk_...) はサーバー側のみで使用。</strong>
+        Androidアプリには <strong>公開キー (pk_...) のみ</strong> を組み込んでください。<br>
+        <a href="https://stripe.com/docs/keys" target="_blank" rel="noopener">Stripeキー管理について →</a>
+      </div>
+      <div class="maps-props-section">
+        <div class="maps-props-section-title">公開キー (Publishable Key)</div>
+        <div class="api-key-group">
+          <input type="password" id="stripePubKeyInput" class="api-key-input"
+                 placeholder="pk_test_..." autocomplete="off" spellcheck="false">
+          <button class="api-key-toggle-btn" id="stripePubKeyToggle" title="表示/非表示">👁</button>
+        </div>
+        <div class="api-key-status" id="stripePubKeyStatus"></div>
+      </div>
+      <div class="maps-props-section">
+        <div class="maps-props-section-title">🧪 テスト用カード番号</div>
+        <div style="font-family:var(--font-mono);font-size:11px;background:var(--surface-variant);border-radius:4px;padding:8px;line-height:1.8;color:var(--on-surface);">
+          <div><strong>成功:</strong> 4242 4242 4242 4242</div>
+          <div><strong>3Dセキュア:</strong> 4000 0025 0000 3155</div>
+          <div><strong>残高不足:</strong> 4000 0000 0000 9995</div>
+          <div style="color:var(--on-surface-secondary);font-size:10px;">有効期限: 任意の未来日 / CVV: 任意の3桁</div>
+        </div>
+      </div>
+      <div class="maps-props-section">
+        <div class="maps-props-section-title">セットアップ手順</div>
+        <ol class="api-steps-list">
+          <li><span class="api-step-num">1</span><span class="api-step-text"><a href="https://dashboard.stripe.com/register" target="_blank" rel="noopener">Stripeダッシュボード</a> でアカウント作成</span></li>
+          <li><span class="api-step-num">2</span><span class="api-step-text">「開発者」→「APIキー」から <strong>公開可能キー (pk_test_...)</strong> をコピー</span></li>
+          <li><span class="api-step-num">3</span><span class="api-step-text">上のフィールドに貼り付けて「保存」</span></li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- ---- Rakuten panel ---- -->
+    <div class="ext-api-panel" id="apiPanel-rakuten">
+      <div class="google-modal-header">
+        <div class="google-modal-logo">🛒</div>
+        <div class="google-modal-title-block">
+          <h2>楽天アプリケーションID</h2>
+          <p>ProductSearch コンポーネントの商品検索に使用します</p>
+        </div>
+      </div>
+      <div class="api-security-notice">
+        ⚠️ APIキーはローカルストレージに難読化保存されます。
+        <a href="https://webservice.rakuten.co.jp/" target="_blank" rel="noopener">楽天ウェブサービス</a>
+        でアプリ登録してIDを取得してください。
+      </div>
+      <div class="maps-props-section">
+        <div class="maps-props-section-title">アプリケーションID</div>
+        <div class="api-key-group">
+          <input type="password" id="rakutenApiKeyInput" class="api-key-input"
+                 placeholder="xxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false">
+          <button class="api-key-toggle-btn" id="rakutenApiKeyToggle" title="表示/非表示">👁</button>
+        </div>
+        <div class="api-key-status" id="rakutenApiKeyStatus"></div>
+      </div>
+      <div class="maps-props-section">
+        <div class="maps-props-section-title">アフィリエイトID (任意)</div>
+        <div class="api-key-group">
+          <input type="text" id="rakutenAffiliateInput" class="api-key-input"
+                 placeholder="xxxxxxxx.xxxxxxxx.xxxxxxxx.xxxxxxxx" autocomplete="off">
+        </div>
+        <div style="font-size:10px;color:var(--on-surface-secondary);margin-bottom:8px;">
+          楽天アフィリエイトに登録するとリンク経由の購入で報酬が発生します
+        </div>
+      </div>
+      <div class="maps-props-section">
+        <div class="maps-props-section-title">セットアップ手順</div>
+        <ol class="api-steps-list">
+          <li><span class="api-step-num">1</span><span class="api-step-text"><a href="https://webservice.rakuten.co.jp/" target="_blank" rel="noopener">楽天ウェブサービス</a> でアプリを登録</span></li>
+          <li><span class="api-step-num">2</span><span class="api-step-text">発行された <strong>アプリケーションID</strong> をコピー</span></li>
+          <li><span class="api-step-num">3</span><span class="api-step-text">上のフィールドに貼り付けて「保存」</span></li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" id="btnGoogleApiClose">閉じる</button>
+      <button class="btn-primary" id="btnGoogleApiSave">💾 保存</button>
+    </div>
+  </div>
 </div>
 
-<!-- STATUS BAR -->
-<div id="statusbar">
-    <div class="status-item">📦 コンポーネント: <strong id="status-comp-count">0</strong></div>
-    <div class="status-item">📍 選択中: <strong id="status-selected">なし</strong></div>
-    <div class="status-item" id="status-grid-info">🔲 グリッド: 20px</div>
-    <div class="flex-spacer"></div>
-    <div class="status-item">⌨️ Ctrl+Z: Undo / Ctrl+Y: Redo / Space+Drag: Pan</div>
+
+<!-- ===== Marker Editor Modal ===== -->
+<div class="modal-overlay" id="markerEditorModal">
+  <div class="modal" style="max-width:460px;">
+    <div class="modal-title" id="markerEditorModalTitle">📍 マーカーを追加</div>
+
+    <div class="marker-form">
+      <div>
+        <label for="markerTitleInput" style="font-size:11px;color:var(--on-surface-secondary);margin-bottom:4px;display:block;">タイトル</label>
+        <input type="text" id="markerTitleInput" class="maps-props-input"
+               placeholder="マーカーのタイトル" style="width:100%;box-sizing:border-box;">
+      </div>
+      <div>
+        <label for="markerSnippetInput" style="font-size:11px;color:var(--on-surface-secondary);margin-bottom:4px;display:block;">説明 (Snippet)</label>
+        <input type="text" id="markerSnippetInput" class="maps-props-input"
+               placeholder="クリック時に表示されるテキスト" style="width:100%;box-sizing:border-box;">
+      </div>
+      <div style="display:flex;gap:8px;">
+        <div style="flex:1;">
+          <label for="markerLatInput" style="font-size:11px;color:var(--on-surface-secondary);margin-bottom:4px;display:block;">緯度</label>
+          <input type="number" id="markerLatInput" class="maps-props-input"
+                 value="35.6762" step="0.0001" min="-90" max="90" style="width:100%;box-sizing:border-box;">
+        </div>
+        <div style="flex:1;">
+          <label for="markerLngInput" style="font-size:11px;color:var(--on-surface-secondary);margin-bottom:4px;display:block;">経度</label>
+          <input type="number" id="markerLngInput" class="maps-props-input"
+                 value="139.6503" step="0.0001" min="-180" max="180" style="width:100%;box-sizing:border-box;">
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-actions" style="margin-top:16px;">
+      <button class="btn-secondary" id="btnMarkerEditorClose">キャンセル</button>
+      <button class="btn-primary" id="btnMarkerEditorSave">📍 追加</button>
+    </div>
+  </div>
 </div>
 
-<!-- ============================================================
-     SCRIPTS (in dependency order)
-     ============================================================ -->
+
+
+<!-- Phase 1: Core -->
 <script src="scripts/components.js"></script>
-<script src="scripts/history.js"></script>
-<script src="scripts/storage.js"></script>
-<script src="scripts/canvas.js"></script>
-<script src="scripts/grid.js"></script>
-<script src="scripts/templates.js"></script>
+
+<!-- Phase 2: Editor enhancements -->
+<script src="scripts/undoRedo.js"></script>
+<script src="scripts/projectManager.js"></script>
+
+<!-- Phase 3: Extended components and systems -->
+<script src="scripts/components-extended.js"></script>
+<script src="scripts/component-registry.js"></script>
+<script src="scripts/material-design.js"></script>
+<script src="scripts/layout-manager.js"></script>
 <script src="scripts/codeGenerator.js"></script>
 <script src="scripts/samples.js"></script>
+
+<!-- Phase 4: Google API Integration -->
+<script src="scripts/google-apis/api-manager.js"></script>
+<script src="scripts/google-apis/markers.js"></script>
+<script src="scripts/google-apis/google-maps-codegen.js"></script>
+<script src="scripts/google-apis/maps.js"></script>
+
+<!-- Phase 4 Extended: Weather, Payment, eCommerce APIs -->
+<script src="scripts/google-apis/weather-codegen.js"></script>
+<script src="scripts/google-apis/weather.js"></script>
+<script src="scripts/google-apis/stripe-codegen.js"></script>
+<script src="scripts/google-apis/stripe.js"></script>
+<script src="scripts/google-apis/rakuten-codegen.js"></script>
+<script src="scripts/google-apis/rakuten.js"></script>
+
+<!-- Editor core (must be last) -->
 <script src="scripts/editor.js"></script>
 
+<!-- ===== Inline Initialization ===== -->
 <script>
-// ============================================================
-// アプリケーション初期化
-// ============================================================
+// Right panel tab switcher
+function switchRightPanel(tab) {
+  document.getElementById('panelProperties').style.display = tab === 'properties' ? '' : 'none';
+  document.getElementById('panelCode').style.display = tab === 'code' ? '' : 'none';
+  document.getElementById('panelDeps').style.display = tab === 'deps' ? '' : 'none';
+
+  document.getElementById('tabProperties').classList.toggle('active', tab === 'properties');
+  document.getElementById('tabCode').classList.toggle('active', tab === 'code');
+  document.getElementById('tabDeps').classList.toggle('active', tab === 'deps');
+}
+
+// Code tab switching
 document.addEventListener('DOMContentLoaded', () => {
-
-    // --- Canvas & Grid 初期化 ---
-    const canvasContainer = document.getElementById('canvas-container');
-    const canvasEl = document.getElementById('canvas');
-    initCanvas(canvasContainer, canvasEl);
-    initGrid(canvasEl);
-
-    // --- Editor 初期化 ---
-    storageManager.setEditor(editor);
-    templateManager.setEditor(editor);
-
-    setupDropZone();
-    setupComponentPalette();
-    setupPropertiesPanel();
-
-    // --- History ショートカット ---
-    initHistoryShortcuts();
-
-    // --- History ボタン接続 ---
-    historyManager.onChange(updateHistoryButtons);
-    historyManager.onChange((state) => {
-        const indicator = document.getElementById('history-indicator');
-        if (indicator) {
-            indicator.textContent = state.undoCount > 0
-                ? `${state.undoCount} ops`
-                : '';
-        }
+  document.querySelectorAll('[data-code-tab]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-code-tab]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('[data-code-panel]').forEach(panel => {
+        panel.style.display = (panel.dataset.codePanel === btn.dataset.codeTab) ? 'flex' : 'none';
+      });
     });
+  });
 
-    document.getElementById('btn-undo').addEventListener('click', () => {
-        const result = historyManager.undo();
-        if (result) showToast(`Undo: ${result}`);
+  // Theme generator modal setup
+  setupThemeGenerator();
+
+  // Google API modal setup
+  setupGoogleApiModal();
+
+  // Strings copy
+  const copyStringsBtn = document.getElementById('btnCopyStrings');
+  if (copyStringsBtn) {
+    copyStringsBtn.addEventListener('click', () => {
+      const out = document.getElementById('stringsOutput');
+      if (out) navigator.clipboard.writeText(out.textContent);
     });
+  }
 
-    document.getElementById('btn-redo').addEventListener('click', () => {
-        const result = historyManager.redo();
-        if (result) showToast(`Redo: ${result}`);
+  // Component count update (hook into canvas mutations)
+  const canvas = document.getElementById('canvas');
+  if (canvas) {
+    const observer = new MutationObserver(() => {
+      const count = canvas.querySelectorAll('.canvas-component').length;
+      const label = document.getElementById('componentCount');
+      if (label) label.textContent = `${count} コンポーネント`;
     });
+    observer.observe(canvas, { childList: true, subtree: false });
+  }
 
-    // --- Save / Load ---
-    document.getElementById('btn-save').addEventListener('click', () => {
-        storageManager.saveToLocalStorage();
-        storageManager.downloadProject();
-        showToast('💾 プロジェクトを保存しました');
-    });
-
-    document.getElementById('btn-load').addEventListener('click', () => {
-        storageManager.uploadProject((ok, data) => {
-            if (ok) {
-                showToast(`📂 読込完了: ${data.name}`);
-            } else {
-                showToast('❌ 読込に失敗しました');
-            }
-        });
-    });
-
-    // --- Clear ---
-    document.getElementById('btn-clear').addEventListener('click', () => {
-        if (editor.components.length === 0) return;
-        if (confirm('すべてのコンポーネントを削除しますか？')) {
-            editor.clearAll();
-            showToast('🗑 クリアしました');
-        }
-    });
-
-    // --- Zoom ---
-    document.getElementById('btn-zoom-in').addEventListener('click', () => {
-        canvasManager.zoomIn();
-    });
-    document.getElementById('btn-zoom-out').addEventListener('click', () => {
-        canvasManager.zoomOut();
-    });
-    document.getElementById('btn-zoom-reset').addEventListener('click', () => {
-        canvasManager.reset();
-        showToast('⊙ ズームリセット');
-    });
-
-    canvasManager.onChange((state) => {
-        const badge = document.getElementById('canvas-zoom-badge');
-        if (badge) badge.textContent = `${Math.round(state.scale * 100)}%`;
-    });
-
-    // --- Grid Controls ---
-    document.getElementById('chk-grid').addEventListener('change', (e) => {
-        gridManager.setGridVisible(e.target.checked);
-        updateGridStatus();
-    });
-    document.getElementById('chk-snap').addEventListener('change', (e) => {
-        gridManager.setSnapEnabled(e.target.checked);
-        updateGridStatus();
-    });
-    document.getElementById('sel-grid-size').addEventListener('change', (e) => {
-        gridManager.setGridSize(parseInt(e.target.value));
-        updateGridStatus();
-    });
-
-    function updateGridStatus() {
-        const el = document.getElementById('status-grid-info');
-        if (el) el.textContent = `🔲 グリッド: ${gridManager.gridSize}px ${gridManager.snapEnabled ? '(スナップON)' : '(スナップOFF)'}`;
-    }
-    updateGridStatus();
-
-    // --- Project Name ---
-    document.getElementById('project-name').addEventListener('change', (e) => {
-        editor.projectName = e.target.value;
-    });
-
-    // --- Delete Component ---
-    document.getElementById('btn-delete-component').addEventListener('click', () => {
-        if (editor.selectedId) {
-            editor.removeComponent(editor.selectedId);
-            showToast('🗑 コンポーネントを削除しました');
-        }
-    });
-
-    // --- Code Mode ---
-    document.querySelectorAll('.code-mode-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.code-mode-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            codeGenerator.setMode(btn.dataset.mode);
-            // コード出力を更新
-            const outputEl = document.getElementById('code-output');
-            if (outputEl) outputEl.textContent = codeGenerator.generate(editor.components);
-        });
-    });
-
-    // --- Copy Code ---
-    document.getElementById('btn-copy-code').addEventListener('click', () => {
-        const code = document.getElementById('code-output').textContent;
-        navigator.clipboard.writeText(code).then(() => {
-            showToast('📋 コピーしました');
-        }).catch(() => {
-            showToast('❌ コピーに失敗しました');
-        });
-    });
-
-    // --- Panel Tabs ---
-    document.querySelectorAll('.panel-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-            const panelId = tab.dataset.panel;
-            document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.panel-content').forEach(p => p.classList.remove('active'));
-            tab.classList.add('active');
-            const panel = document.getElementById(`panel-${panelId}`);
-            if (panel) panel.classList.add('active');
-        });
-    });
-
-    // --- Sidebar Tabs ---
-    document.querySelectorAll('.sidebar-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-            const tabId = tab.dataset.tab;
-            document.querySelectorAll('.sidebar-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.sidebar-tab-content').forEach(c => c.classList.remove('active'));
-            tab.classList.add('active');
-            const content = document.getElementById(`tab-${tabId}`);
-            if (content) content.classList.add('active');
-        });
-    });
-
-    // --- Sample Buttons ---
-    document.querySelectorAll('.sample-item').forEach(item => {
-        item.addEventListener('click', () => {
-            const sampleId = item.dataset.sample;
-            if (editor.components.length > 0) {
-                if (!confirm('現在の設計をクリアしてサンプルを読み込みますか？')) return;
-            }
-            loadSample(sampleId, editor);
-            showToast('📋 サンプルを読み込みました');
-        });
-    });
-
-    // --- Templates ---
-    function renderTemplates() {
-        const container = document.getElementById('templates-list');
-        if (!container) return;
-        container.innerHTML = '';
-
-        const templates = templateManager.getAllTemplates();
-        const builtins = templates.filter(t => t.builtin);
-        const user = templates.filter(t => !t.builtin);
-
-        if (builtins.length > 0) {
-            const title = document.createElement('div');
-            title.className = 'templates-section-title';
-            title.textContent = 'ビルトイン';
-            container.appendChild(title);
-            builtins.forEach(t => container.appendChild(createTemplateItem(t)));
-        }
-
-        if (user.length > 0) {
-            const title = document.createElement('div');
-            title.className = 'templates-section-title';
-            title.textContent = 'マイテンプレート';
-            container.appendChild(title);
-            user.forEach(t => container.appendChild(createTemplateItem(t)));
-        }
-
-        if (templates.length === 0) {
-            container.innerHTML = '<p style="text-align:center;color:#999;font-size:12px;padding:20px;">テンプレートがありません</p>';
-        }
-    }
-
-    function createTemplateItem(template) {
-        const item = document.createElement('div');
-        item.className = 'template-item';
-
-        const icon = document.createElement('span');
-        icon.className = 'template-item-icon';
-        icon.textContent = template.icon || '📐';
-        item.appendChild(icon);
-
-        const info = document.createElement('div');
-        info.className = 'template-item-info';
-        info.innerHTML = `
-            <div class="template-item-name">${template.name}</div>
-            <div class="template-item-desc">${template.description || ''}</div>
-        `;
-        item.appendChild(info);
-
-        const actions = document.createElement('div');
-        actions.className = 'template-item-actions';
-
-        // Apply on main click
-        info.addEventListener('click', () => applyTemplate(template));
-        icon.addEventListener('click', () => applyTemplate(template));
-
-        // Export button
-        const exportBtn = document.createElement('button');
-        exportBtn.className = 'template-action-btn';
-        exportBtn.title = 'エクスポート';
-        exportBtn.textContent = '⬇';
-        exportBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            templateManager.exportTemplate(template.id);
-        });
-        actions.appendChild(exportBtn);
-
-        // Delete button (user templates only)
-        if (!template.builtin) {
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'template-action-btn delete';
-            deleteBtn.title = '削除';
-            deleteBtn.textContent = '✕';
-            deleteBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (confirm(`テンプレート "${template.name}" を削除しますか？`)) {
-                    templateManager.deleteTemplate(template.id);
-                    showToast('テンプレートを削除しました');
-                }
-            });
-            actions.appendChild(deleteBtn);
-        }
-
-        item.appendChild(actions);
-        return item;
-    }
-
-    function applyTemplate(template) {
-        if (editor.components.length > 0) {
-            if (!confirm(`テンプレート "${template.name}" を適用します。現在の設計は置換されます。`)) return;
-        }
-        templateManager.applyTemplate(template.id);
-        showToast(`📐 テンプレート "${template.name}" を適用しました`);
-    }
-
-    templateManager.onChange(renderTemplates);
-    renderTemplates();
-
-    // Save current as template
-    document.getElementById('btn-save-template').addEventListener('click', () => {
-        if (editor.components.length === 0) {
-            showToast('❌ コンポーネントがありません');
-            return;
-        }
-        showSaveTemplateDialog();
-    });
-
-    document.getElementById('btn-import-template').addEventListener('click', () => {
-        templateManager.importTemplate((ok, data) => {
-            if (ok) showToast(`📥 テンプレート "${data.name}" をインポートしました`);
-            else showToast('❌ インポートに失敗しました');
-        });
-    });
-
-    function showSaveTemplateDialog() {
-        const overlay = document.createElement('div');
-        overlay.className = 'dialog-overlay';
-        overlay.innerHTML = `
-            <div class="dialog-box">
-                <h3>テンプレートとして保存</h3>
-                <div class="dialog-field">
-                    <label>テンプレート名</label>
-                    <input type="text" id="dlg-template-name" placeholder="マイテンプレート" value="">
-                </div>
-                <div class="dialog-field">
-                    <label>説明</label>
-                    <input type="text" id="dlg-template-desc" placeholder="説明（任意）" value="">
-                </div>
-                <div class="dialog-actions">
-                    <button class="dialog-btn secondary" id="dlg-cancel">キャンセル</button>
-                    <button class="dialog-btn primary" id="dlg-save">保存</button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(overlay);
-
-        document.getElementById('dlg-template-name').focus();
-
-        document.getElementById('dlg-cancel').addEventListener('click', () => {
-            overlay.remove();
-        });
-
-        document.getElementById('dlg-save').addEventListener('click', () => {
-            const name = document.getElementById('dlg-template-name').value.trim() || 'マイテンプレート';
-            const desc = document.getElementById('dlg-template-desc').value.trim();
-            const t = templateManager.saveCurrentAsTemplate(name, desc);
-            overlay.remove();
-            if (t) {
-                showToast(`📐 テンプレート "${t.name}" を保存しました`);
-                // テンプレートタブに切り替え
-                document.querySelectorAll('.sidebar-tab').forEach(tab => {
-                    if (tab.dataset.tab === 'templates') tab.click();
-                });
-            }
-        });
-
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) overlay.remove();
-        });
-    }
-
-    // --- Status bar updates ---
-    editor.onChange((components) => {
-        const countEl = document.getElementById('status-comp-count');
-        if (countEl) countEl.textContent = components.length;
-    });
-
-    editor.onSelect((comp) => {
-        const el = document.getElementById('status-selected');
-        if (el) el.textContent = comp ? `${comp.type} (${comp.props.id || comp.id})` : 'なし';
-
-        const typeLabel = document.getElementById('selected-component-type');
-        if (typeLabel) {
-            typeLabel.textContent = comp ? comp.type : '';
-            typeLabel.style.display = comp ? 'block' : 'none';
-        }
-    });
-
-    // --- Auto-save 初期化 ---
-    startAutoSave(30000);
-
-    // --- 前回のプロジェクト自動復元 ---
-    const meta = storageManager.getLastSaveMeta();
-    if (meta) {
-        const shouldRestore = confirm(`前回のプロジェクト "${meta.name}" を復元しますか？\n（保存日時: ${new Date(meta.savedAt).toLocaleString()}）`);
-        if (shouldRestore) {
-            const saved = storageManager.loadFromLocalStorage();
-            if (saved) {
-                editor.loadProject(saved);
-                showToast(`📂 "${saved.name}" を復元しました`);
-            }
-        }
-    }
-
-    // --- 初期コード出力 ---
-    const outputEl = document.getElementById('code-output');
-    if (outputEl) outputEl.textContent = codeGenerator.generate(editor.components);
-
-    showToast('✅ エディタの準備ができました');
+  // Auto-update strings.xml and deps when editor changes
+  setInterval(() => {
+    if (typeof editor === 'undefined' || !editor._components) return;
+    updateStringsXml();
+    updateDepsPanel();
+  }, 2000);
 });
+
+function updateStringsXml() {
+  if (typeof editor === 'undefined' || !editor._components) return;
+  if (typeof componentRegistry === 'undefined') return;
+  const codeGen = new CodeGenerator(componentRegistry);
+  const project = typeof projectManager !== 'undefined' ? projectManager.getCurrentProject() : null;
+  const xml = codeGen.generateStringsXml(editor._components, {
+    appName: project ? project.appName : 'MyApp'
+  });
+  const out = document.getElementById('stringsOutput');
+  if (out) out.textContent = xml;
+}
+
+function updateDepsPanel() {
+  if (typeof editor === 'undefined' || !editor._components) return;
+  if (typeof componentRegistry === 'undefined') return;
+
+  const deps = componentRegistry.getRequiredDependencies(editor._components);
+  const depsOut = document.getElementById('depsOutput');
+  if (depsOut) {
+    if (deps.length === 0) {
+      depsOut.innerHTML = '<span style="color:var(--success)">✓ 追加の依存関係は不要です</span>';
+    } else {
+      depsOut.innerHTML = deps.map(d =>
+        `<div style="font-family:var(--font-mono);font-size:11px;padding:4px 6px;background:var(--surface-variant);border-radius:3px;margin-bottom:4px;word-break:break-all;">${d}</div>`
+      ).join('');
+    }
+  }
+
+  const hasMapView     = editor._components.some(c => c.type === 'MapView');
+  const hasWeather     = editor._components.some(c => c.type === 'WeatherView');
+  const hasPayment     = editor._components.some(c => c.type === 'PaymentForm');
+  const hasProduct     = editor._components.some(c => c.type === 'ProductSearch');
+  const project        = typeof projectManager !== 'undefined' ? projectManager.getCurrentProject() : null;
+  const packageName    = project ? project.packageName : 'com.example.myapp';
+  const appName        = project ? project.appName     : 'MyApp';
+
+  // Update build.gradle – prefer most specific generator
+  const gradleOut = document.getElementById('gradleOutput');
+  if (gradleOut) {
+    if (hasMapView && typeof GoogleMapsCodegen !== 'undefined') {
+      gradleOut.textContent = GoogleMapsCodegen.generateGradleContent({ appId: packageName });
+    } else if (hasWeather && typeof WeatherCodegen !== 'undefined') {
+      gradleOut.textContent = WeatherCodegen.generateGradleContent({ appId: packageName });
+    } else if (hasPayment && typeof StripeCodegen !== 'undefined') {
+      gradleOut.textContent = StripeCodegen.generateGradleContent({ appId: packageName });
+    } else if (hasProduct && typeof RakutenCodegen !== 'undefined') {
+      gradleOut.textContent = RakutenCodegen.generateGradleContent({ appId: packageName });
+    } else if (typeof MATERIAL_DESIGN !== 'undefined') {
+      gradleOut.textContent = MATERIAL_DESIGN.generateGradleDependencies(deps);
+    }
+  }
+
+  // Update manifest
+  const manifestOut = document.getElementById('manifestOutput');
+  if (manifestOut) {
+    if (hasMapView && typeof GoogleMapsCodegen !== 'undefined') {
+      const apiKey = typeof GoogleApiManager !== 'undefined'
+        ? GoogleApiManager.getApiKey('maps') || 'YOUR_GOOGLE_MAPS_API_KEY'
+        : 'YOUR_GOOGLE_MAPS_API_KEY';
+      manifestOut.textContent = GoogleMapsCodegen.generateManifestXml({
+        packageName,
+        appName,
+        apiKey,
+        needsLocation: editor._components.some(c => c.type === 'MapView' && c.props && c.props.showMyLocation),
+      });
+    } else if ((hasWeather || hasPayment || hasProduct) && typeof MATERIAL_DESIGN !== 'undefined') {
+      // Internet permission is needed for external API components
+      manifestOut.textContent = MATERIAL_DESIGN.generateManifestXml({ packageName, appName });
+    } else if (typeof MATERIAL_DESIGN !== 'undefined') {
+      manifestOut.textContent = MATERIAL_DESIGN.generateManifestXml({ packageName, appName });
+    }
+  }
+}
+
+function setupThemeGenerator() {
+  const swatchGrid = document.getElementById('colorSwatches');
+  if (!swatchGrid || typeof MATERIAL_DESIGN === 'undefined') return;
+
+  let selectedSeed = MATERIAL_DESIGN.colorSeeds[0];
+
+  MATERIAL_DESIGN.colorSeeds.forEach((seed, i) => {
+    const swatch = document.createElement('div');
+    swatch.className = `color-swatch${i === 0 ? ' selected' : ''}`;
+    swatch.style.background = seed.primary;
+    swatch.title = seed.name;
+    swatch.addEventListener('click', () => {
+      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+      swatch.classList.add('selected');
+      selectedSeed = seed;
+      updateThemePreview(seed);
+    });
+    swatchGrid.appendChild(swatch);
+  });
+
+  function updateThemePreview(seed) {
+    const bar = document.getElementById('themePreviewBar');
+    const btn = document.getElementById('themePreviewBtn');
+    const btnOut = document.getElementById('themePreviewBtnOutlined');
+    const chip = document.getElementById('themePreviewChip');
+    if (bar) bar.style.background = seed.primary;
+    if (btn) { btn.style.background = seed.primary; btn.style.color = '#fff'; }
+    if (btnOut) { btnOut.style.color = seed.primary; }
+    if (chip) { chip.style.color = seed.primary; }
+  }
+
+  // Sync app name to preview
+  const appNameInput = document.getElementById('themeAppName');
+  if (appNameInput) {
+    appNameInput.addEventListener('input', () => {
+      const t = document.getElementById('themePreviewTitle');
+      if (t) t.textContent = appNameInput.value || 'MyApp';
+    });
+  }
+
+  // Download buttons
+  const downloadThemeBtn = document.getElementById('btnDownloadTheme');
+  if (downloadThemeBtn) {
+    downloadThemeBtn.addEventListener('click', () => {
+      const xml = MATERIAL_DESIGN.generateThemesXml({
+        appName: document.getElementById('themeAppName').value || 'MyApp',
+        seedColor: selectedSeed,
+      });
+      downloadFile('themes.xml', xml, 'text/xml');
+    });
+  }
+
+  const downloadColorsBtn = document.getElementById('btnDownloadColors');
+  if (downloadColorsBtn) {
+    downloadColorsBtn.addEventListener('click', () => {
+      const xml = MATERIAL_DESIGN.generateColorsXml({ seedColor: selectedSeed });
+      downloadFile('colors.xml', xml, 'text/xml');
+    });
+  }
+
+  const downloadManifestBtn = document.getElementById('btnDownloadManifest');
+  if (downloadManifestBtn) {
+    downloadManifestBtn.addEventListener('click', () => {
+      const xml = MATERIAL_DESIGN.generateManifestXml({
+        appName: document.getElementById('themeAppName').value || 'MyApp',
+        packageName: document.getElementById('themePackageName').value || 'com.example.myapp',
+      });
+      downloadFile('AndroidManifest.xml', xml, 'text/xml');
+    });
+  }
+}
+
+function downloadFile(filename, content, mimeType) {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ---- Google API Modal (with tabs for Maps / Weather / Stripe / Rakuten) ----
+function setupGoogleApiModal() {
+  const openBtn = document.getElementById('btnGoogleApiSettings');
+  const modal   = document.getElementById('googleApiModal');
+  const closeBtn = document.getElementById('btnGoogleApiClose');
+  const saveBtn  = document.getElementById('btnGoogleApiSave');
+
+  if (!openBtn || !modal) return;
+
+  // ---- Tab switching ----
+  const apiTabBtns   = modal.querySelectorAll('.ext-api-tab');
+  const apiPanels    = modal.querySelectorAll('.ext-api-panel');
+  let activeApiTab   = 'maps';
+
+  apiTabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      apiTabBtns.forEach(b => b.classList.remove('active'));
+      apiPanels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      const panelId = 'apiPanel-' + btn.dataset.apiTab;
+      const panel = document.getElementById(panelId);
+      if (panel) panel.classList.add('active');
+      activeApiTab = btn.dataset.apiTab || 'maps';
+    });
+  });
+
+  // ---- Helper: setup a key input with toggle + status ----
+  function _setupKeyInput(inputId, toggleId, statusId, validatorFn) {
+    const input  = document.getElementById(inputId);
+    const toggle = document.getElementById(toggleId);
+    const status = document.getElementById(statusId);
+    if (!input) return;
+
+    if (toggle) {
+      toggle.addEventListener('click', () => {
+        input.type = input.type === 'password' ? 'text' : 'password';
+        toggle.textContent = input.type === 'password' ? '👁' : '🙈';
+      });
+    }
+
+    function _update() {
+      if (!status) return;
+      const val = input.value.trim();
+      if (!val) { input.className = 'api-key-input'; status.textContent = ''; return; }
+      const valid = validatorFn ? validatorFn(val) : val.length >= 20;
+      input.className = `api-key-input ${valid ? 'valid' : 'invalid'}`;
+      status.textContent = valid ? '✓ 有効なキー形式です' : '⚠ キー形式を確認してください';
+      status.className = `api-key-status ${valid ? 'ok' : 'error'}`;
+    }
+    input.addEventListener('input', _update);
+    return _update;
+  }
+
+  // ---- Maps ----
+  const mapsUpdate = _setupKeyInput('gApiKeyInput', 'gApiKeyToggle', 'gApiKeyStatus',
+    (k) => typeof GoogleApiManager !== 'undefined' ? GoogleApiManager.validateApiKey(k) : k.length >= 20);
+
+  // ---- Weather ----
+  _setupKeyInput('weatherApiKeyInput', 'weatherApiKeyToggle', 'weatherApiKeyStatus',
+    (k) => k.length >= 20 && /^[a-f0-9]+$/.test(k));
+
+  // ---- Stripe ----
+  _setupKeyInput('stripePubKeyInput', 'stripePubKeyToggle', 'stripePubKeyStatus',
+    (k) => k.startsWith('pk_') && k.length >= 20);
+
+  // ---- Rakuten ----
+  _setupKeyInput('rakutenApiKeyInput', 'rakutenApiKeyToggle', 'rakutenApiKeyStatus',
+    (k) => k.length >= 10);
+
+  // ---- Pre-fill saved keys on open ----
+  openBtn.addEventListener('click', () => {
+    if (typeof GoogleApiManager !== 'undefined') {
+      const mapsInput    = document.getElementById('gApiKeyInput');
+      const weatherInput = document.getElementById('weatherApiKeyInput');
+      const stripeInput  = document.getElementById('stripePubKeyInput');
+      const rakutenInput = document.getElementById('rakutenApiKeyInput');
+      const rakutenAff   = document.getElementById('rakutenAffiliateInput');
+      if (mapsInput)    mapsInput.value    = GoogleApiManager.getApiKey('maps')    || '';
+      if (weatherInput) weatherInput.value = GoogleApiManager.getApiKey('weather') || '';
+      if (stripeInput)  stripeInput.value  = GoogleApiManager.getApiKey('stripe')  || '';
+      if (rakutenInput) rakutenInput.value = GoogleApiManager.getApiKey('rakuten') || '';
+      if (rakutenAff)   rakutenAff.value   = GoogleApiManager.getApiKey('rakuten_affiliate') || '';
+    }
+    if (mapsUpdate) mapsUpdate();
+    modal.style.display = 'flex';
+  });
+
+  if (closeBtn) closeBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+
+  // ---- Save (saves the currently active tab's key) ----
+  if (saveBtn) {
+    saveBtn.addEventListener('click', () => {
+      if (typeof GoogleApiManager === 'undefined') return;
+
+      const savedInfo = {
+        maps:    { inputId: 'gApiKeyInput',        service: 'maps',               label: 'Maps SDK for Android' },
+        weather: { inputId: 'weatherApiKeyInput',  service: 'weather',            label: 'OpenWeatherMap' },
+        stripe:  { inputId: 'stripePubKeyInput',   service: 'stripe',             label: 'Stripe' },
+        rakuten: { inputId: 'rakutenApiKeyInput',  service: 'rakuten',            label: '楽天API' },
+      };
+
+      const info = savedInfo[activeApiTab];
+      if (!info) return;
+
+      const input  = document.getElementById(info.inputId);
+      const status = document.getElementById(info.inputId.replace('Input', 'Status').replace('KeyInput', 'KeyStatus'));
+      const key    = input ? input.value.trim() : '';
+
+      GoogleApiManager.setApiKey(info.service, key);
+      if (key) GoogleApiManager.markApiUsed(info.label);
+
+      // Also save rakuten affiliate if on rakuten tab
+      if (activeApiTab === 'rakuten') {
+        const affInput = document.getElementById('rakutenAffiliateInput');
+        if (affInput) GoogleApiManager.setApiKey('rakuten_affiliate', affInput.value.trim());
+      }
+
+      if (status) {
+        status.textContent = key ? '✓ 保存しました' : '(キーをクリアしました)';
+        status.className = 'api-key-status ok';
+      }
+      setTimeout(() => { modal.style.display = 'none'; }, 800);
+    });
+  }
+
+  // ---- Marker Editor Modal ----
+  const markerModal = document.getElementById('markerEditorModal');
+  const markerClose = document.getElementById('btnMarkerEditorClose');
+  const markerSave  = document.getElementById('btnMarkerEditorSave');
+
+  if (markerClose && markerModal) {
+    markerClose.addEventListener('click', () => { markerModal.style.display = 'none'; });
+  }
+  if (markerModal) {
+    markerModal.addEventListener('click', (e) => {
+      if (e.target === markerModal) markerModal.style.display = 'none';
+    });
+  }
+
+  if (markerSave && markerModal) {
+    markerSave.addEventListener('click', () => {
+      const title   = (document.getElementById('markerTitleInput')   || {}).value || 'マーカー';
+      const snippet = (document.getElementById('markerSnippetInput') || {}).value || '';
+      const lat     = parseFloat((document.getElementById('markerLatInput') || {}).value || '35.6762');
+      const lng     = parseFloat((document.getElementById('markerLngInput') || {}).value || '139.6503');
+
+      const editingMapId = markerModal.dataset.mapId || '';
+      if (editingMapId && typeof markerManager !== 'undefined') {
+        markerManager.addMarker(editingMapId, { title, snippet, lat, lng });
+      }
+      markerModal.style.display = 'none';
+    });
+  }
+}
 </script>
 
 </body>
